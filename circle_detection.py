@@ -4,7 +4,6 @@ import numpy as np
 def detect_circle():
     cam = cv2.VideoCapture(0)
     flag = False
-    circlelist = []
     while True:
         ret, img = cam.read()
 
@@ -13,7 +12,7 @@ def detect_circle():
 
         # param1:
         circles = cv2.HoughCircles(cimg,cv2.HOUGH_GRADIENT,1,20,
-                            param1=50,param2=80,minRadius=30,maxRadius=100)
+                            param1=50,param2=80,minRadius=10,maxRadius=100)
         if circles is not None:
             print("*D::Detect!*")
             circles = np.uint16(np.around(circles))
