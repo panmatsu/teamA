@@ -5,7 +5,7 @@ import sys
 
 if __name__=='__main__':
     if len(sys.argv) < 3:
-        print('filename is not specified.')
+        print('Usage: $python filename img1 img2')
         sys.exit(1)
 
 #コマンドラインからグレー画像を取得
