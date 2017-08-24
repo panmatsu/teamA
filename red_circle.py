@@ -41,11 +41,11 @@ while True:
     if ret == False:
         break
 
-    color_1 = extract_color(frame, 350, 50, 100, 100)  #red
+    color_1 = extract_color(frame, 350,10, 100, 100)  #red
     median = cv2.medianBlur(color_1, 5)
     
     #円検出
-    circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,2.5,20,param1=50,param2=80,minRadius=10,maxRadius=100)
+    circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,3,20,param1=50,param2=80,minRadius=10,maxRadius=100)
     if circles is not None:
         circles = np.uint16(np.around(circles))
         for i in circles[0,:]:
