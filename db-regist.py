@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- codeing: utf-8 -*-
 # python db-regist.py **.csv とcsvファイルの指定
 
 import sqlite3
