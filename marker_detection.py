@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as pyplot
 
-####  マーカー検地  ####
+####  マーカー検知  ####
 def detect_marker():
     ## 元画像読み込み
     img_rgb = cv2.imread('7.png')
@@ -28,11 +28,21 @@ def detect_marker():
     # マッチ度より高ければ場所保存
     loc = np.where( res >= threshold)
 
+    cnt = 0
+
     # マッチした数だけ
     for pt in zip(*loc[::-1]):
         print("左上:"+str(pt[0]))
         # 左上座標と右下座標から四角形表示
         cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 4)
+        cnt += 1
+
+    # マッチしなかったら
+    if cnt == 0:
+        print("Nothing")
+        return False
+
+
     # 画像表示
     cv2.imshow("Image", img_rgb) 
     while True:
@@ -40,6 +50,8 @@ def detect_marker():
         k = cv2.waitKey(1)
         if k == ord('q'):
             break
+
+    return True
 
 
 
