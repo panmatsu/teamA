@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
-import sys
+
 
 # 同フォルダ内のdbkey.dbのDBを展開
 con = sqlite3.connect("dbkey.db")
 
-sql = u"""
+sql = "drop table keyset;"
+con.execute(sql)
+
+sql2 = u"""
 create table keyset (
     id integer,
     name varchar,
@@ -14,4 +17,6 @@ create table keyset (
     silhouette varchar
 );
 """
-con.execute(sql)
+con.execute(sql2)
+
+con.close()

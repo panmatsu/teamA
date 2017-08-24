@@ -3,12 +3,10 @@
 
 import sqlite3
 import sys
-import csv
 import re
 
-# コマンドラインよりcsvファイル名and検索ワード取得
-dat = sys.argv[1]
-pas = sys.argv[2]
+# コマンドラインより検索ワード取得
+pas = sys.argv[1]
 
 # 検索ワード1文字目が数字ならTrue
 a = re.match(r'\d+', pas)
@@ -18,16 +16,10 @@ else:
     sql = "select * from keyset where name == \"" + pas + "\""
 
 # 同フォルダ内のdbkey.dbのDBを展開
-con = sqlite3.connect("dbkey.db")
+con = sqlite3.connect("dbkey.db", isolation_level=None)
 
 # table keyset  *db-table-make.py参照
 # -> id, name, mark, silhouette
-
-# csvを開く
-reader = csv.reader(open(dat))
-for row in reader:
-    sql2 = "insert into keyset values (" + row[0] + ", \'" + row[1] + "\', \'" + row[2] + "\', \'" + row[3] + "\')"
-    con.execute(sql2)
 
 # table:keysetの内容一括表示
 c = con.cursor()
