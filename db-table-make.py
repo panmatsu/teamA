@@ -11,10 +11,10 @@ con.execute(sql)
 
 sql2 = u"""
 create table keyset (
-    id integer,
-    name varchar,
-    mark varchar,
-    silhouette varchar
+    id integer unique not null,
+    name varchar not null,
+    mark varchar not null,
+    silhouette varchar not null
 );
 """
 con.execute(sql2)
