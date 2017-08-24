@@ -8,6 +8,20 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as pyplot
 
+
+    
+loc = None
+
+
+def get_position():
+    plist = [-1]
+    for pt in zip(*loc[::-1]):
+        if plist[0] == -1:
+            plist[0] = pt[0]
+        else:
+            plist.append(pt[0])
+    return plist
+
 ####  マーカー検知  ####
 def detect_marker():
     ## 元画像読み込み
@@ -26,6 +40,8 @@ def detect_marker():
     # マッチ度
     threshold = 0.7
     # マッチ度より高ければ場所保存
+    # グローバル指定
+    global loc
     loc = np.where( res >= threshold)
 
     cnt = 0
@@ -57,4 +73,6 @@ def detect_marker():
 
 if __name__ == '__main__':
     detect_marker()
+    positionList = get_position()
+    print(len(positionList))
 
