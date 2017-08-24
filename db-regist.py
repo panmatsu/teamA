@@ -9,7 +9,7 @@ import csv
 dat = sys.argv[1]
 
 # 同フォルダ内のdbkey.dbのDBを展開
-con = sqlite3.connect("dbkey.db")
+con = sqlite3.connect("dbkey.db", isolation_level=None)
 
 # table keyset
 # -> id, name, mark, silhouette
