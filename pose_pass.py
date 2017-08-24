@@ -7,11 +7,11 @@ import os
 cam = cv2.VideoCapture(0)
 
 #背景画像
-back = 'back.png'
+back = cv2.imread('back.png')
 
 #現時点では鍵の探索は未実装
 #鍵
-key_pose = 'pose.png'
+key_pose = cv2.imread('pose.png')
 #key_mark <- 座標リスト
 
 
