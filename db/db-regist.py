@@ -17,7 +17,7 @@ con = sqlite3.connect("dbkey.db", isolation_level=None)
 # csvを開く
 reader = csv.reader(open(dat))
 for row in reader:
-    sql = "insert into keyset values (" + row[0] + ", \'" + row[1] + "\', \'" + row[2] + "\', \'" + row[3] + "\')"
+    sql = "insert into keyset values (" + row[0] + ", \'" + row[1] + "\', " + row[2] + ", " + row[3] + ", " + row[4] + ", " + row[5] + ", \'" + row[6] + "\')"
     con.execute(sql)
 
 con.close()
