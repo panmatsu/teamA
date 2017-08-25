@@ -7,7 +7,7 @@
 ##############################################
 import cv2
 import numpy as np
-from marker_detection import *
+from detect_red_circle import *
 
 
 #######   マーカーの鍵位置   #############
@@ -17,8 +17,8 @@ from marker_detection import *
 # 2: 四角形右下X座標
 # 3: 　〃　 〃 Y 〃
 ##################################
-lock_position_right = [0,0,300,300]
-lock_position_left  = [0,0,300,300]
+lock_position_right = [0,0,700,700]
+lock_position_left  = [0,0,700,700]
 
 
 # かぎ位置設定
@@ -40,8 +40,11 @@ def set_lock_position(rt, rb, lt, lb):
 ####  Main::マーカー判定  ####
 #全体座標リストから左右リストに振り分ける
 #左右リストは鍵の中に入ってるか確認
+def judge_marker():
 
-def judge_marker(positionList):
+    # detect_red_circle.pyから円の中心座標List(x,y)を持ってくる
+    positionList = get_position()
+
     # ただ左右すべてのXとYだけに振り分けるリスト
     XList = [-1]
     YList = [-1]
@@ -137,18 +140,13 @@ def judge_marker(positionList):
 ############################### Test  #################
 ##if __name__ == '__main__':
 
-##    positionList = None
 
     ##  test  ##
- ##   if(detect_marker() == True):
- ##       print("TRUE")
- ##       positionList = get_position()
+    img = cv2.imread('a.png')
+    if detect_red_circle(img) == True :
+        print("TRUE")
     
-
-
-    #for i in positionList:
-    #    print(i)
- ##   if judge_marker() == True:
- ##       print("判定成功")
- ##   else:
- ##       print("判定失敗")
+   if judge_marker() == True:
+        print("判定成功")
+    else:
+        print("判定失敗")

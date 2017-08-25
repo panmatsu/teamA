@@ -16,3 +16,4 @@ def equivalent_white(filename):
 if __name__ == '__main__':
     dif = equivalent_white("pict.png") - equivalent_white("pict2.png")
     print(dif)
+    
