@@ -41,7 +41,7 @@ while True:
     if ret == False:
         break
 
-    color_1 = extract_color(frame, 350,10, 100, 100)  #red
+    color_1 = extract_color(frame, 330, 20, 50, 75)  #red
     median = cv2.medianBlur(color_1, 5)
     
     #円検出

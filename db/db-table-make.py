@@ -13,7 +13,10 @@ sql2 = u"""
 create table keyset (
     id integer unique not null,
     name varchar not null,
-    mark varchar not null,
+    markrt integer not null,
+    markrb integer not null,
+    marklt integer not null,
+    marklb integer not null,
     silhouette varchar not null
 );
 """
