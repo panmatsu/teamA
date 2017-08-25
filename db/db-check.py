@@ -32,5 +32,4 @@ for row1 in c:
 
 con.close()
 
-print(idnum)
 
