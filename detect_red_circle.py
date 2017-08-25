@@ -3,12 +3,12 @@ import cv2
 import numpy as np
 
 # メンバ変数
-positionList = None
+positionList = [-1]
 
 # +++public +++
 # 円の中心位置座標(X,Y)をリストで返却
 def get_position():
-
+    global positionList
     return positionList
 
 # ---private---
@@ -49,19 +49,17 @@ def extract_color(src, h_low, h_high, s_st, v_st):
 #########    　赤円検出      #############
 #########################################
 ##  赤い円を検出し、中心点を返却 ##
-def detect_red_circle(img):
-
-    # 代入に意味はないがプログラムの変更がめんどくさかっただけ
-    frame = img
+def detect_red_circle(frame):
     
     cv2.imshow("frame", frame)
     
 
-    
+    # 取りたい色をHSVでパラメータ設定
+    # (画像、最低色相角、最高色相角、彩度閾値、明度閾値)
     #############  パラメーターを適切な値にする必要あり  ##############
-    color_1 = extract_color(frame, 200, 30, 50, 75)  #red
-    
+    color_1 = extract_color(frame, 0, 360, 50, 75)  #red
     cv2.imshow("color_1", color_1)
+    # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
     cv2.imshow("median", median)
         
@@ -73,7 +71,20 @@ def detect_red_circle(img):
         print("D::red_circle.py::circle detected!!")
         circles = np.uint16(np.around(circles))
         for i in circles[0,:]:
-            cv2.circle(frame,(i[0],i[1]),i[2],(255,255,0),2)
+
+            # positionListに円中心のXYを代入
+            global positionList
+            if positionList[0] == -1:
+                # 最初の場合のみ直接代入
+                positionList[0] = i[0]
+                positionList.append(i[1])
+            else:
+                # 通常は、リストに追加するだけ
+                positionList.append(i[0])
+                positionList.append(i[1])
+            
+            # 円の描画
+            cv2.circle(frame,(i[0],i[1]),1,(255,255,0),2)
         
     else:
         # 円が見つからなかった
@@ -104,10 +115,15 @@ def detect_red_circle(img):
     return True
 
 
-if __name__ == '__main__':
-    img = cv2.imread('a.png')
+##if __name__ == '__main__':
+##    img = cv2.imread('a.png')
     
-    detect_red_circle(img)
+##    detect_red_circle(img)
+
+##    plist = get_position()
+
+##    for i in plist:
+##        print(i)
 
 
 
