@@ -18,13 +18,19 @@ else:
 # 同フォルダ内のdbkey.dbのDBを展開
 con = sqlite3.connect("dbkey.db", isolation_level=None)
 
-# table keyset  *db-table-make.py参照
-# -> id, name, mark, silhouette
-
-# table:keysetの内容一括表示
+# table:keysetのhitした内容取得
 c = con.cursor()
 c.execute(sql)
 for row1 in c:
-    print(row1[0], row1[1], row1[2], row1[3])
+    idnum = row1[0]
+    name = row1[1]
+    rt = row1[2]
+    rb = row1[3]
+    lt = row1[4]
+    lb = row1[5]
+    pose = row1[6]
 
 con.close()
+
+print(idnum)
+
