@@ -40,6 +40,7 @@ def set_lock_position(rt, rb, lt, lb):
 ####  Main::マーカー判定  ####
 #全体座標リストから左右リストに振り分ける
 #左右リストは鍵の中に入ってるか確認
+
 def judge_marker(positionList):
     # ただ左右すべてのXとYだけに振り分けるリスト
     XList = [-1]
@@ -67,6 +68,7 @@ def judge_marker(positionList):
     # XとYの平均を計算
     xAve = sum(XList)/len(XList)
     yAve = sum(YList)/len(YList)
+
     #print("xAve:"+str(xAve))
     #print("yAve:"+str(yAve))
 
@@ -82,11 +84,12 @@ def judge_marker(positionList):
             break
         cnt += 1
     
+
     #print("Xlist[cnt-1]:"+str(XList[cnt-1]))
     #print("Ylist[cnt-1]:"+str(YList[cnt-1]))
     #print("わかれめ")
     #print("XList[cnt]:"+str(XList[cnt]))
-    #print("YList[cnt]:"+str(YList[cnt]))
+    #print("YList[cnt]:"+str(YList[
 
     # 左右マーカーの左上座標特定終了
     if XList[cnt-1] < xAve:

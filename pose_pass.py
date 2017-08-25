@@ -16,7 +16,7 @@ back = cv2.imread('back.png')
 #現時点では鍵の探索は未実装
 #鍵
 key_pose = cv2.imread('pose.png')
-marker = cv2.imread('template.png',0)
+marker = cv2.imread('template.png',
 
 
 #特徴量計算(体)

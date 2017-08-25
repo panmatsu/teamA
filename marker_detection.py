@@ -12,7 +12,6 @@ from matplotlib import pyplot as pyplot
     
 loc = None
 
-
 def get_position():
     plist = [-1]
     for pt in zip(*loc[::-1]):
@@ -31,7 +30,7 @@ def detect_marker(img_rgb,template):
 
 
     ## テンプレート画像読み込み
-    #template = cv2.imread('hand.png', 0)
+    #template = cv2.imread('hand.pn
     # 画像サイズ取得
     w, h = template.shape[::-1]
 
