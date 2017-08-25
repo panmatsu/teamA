@@ -23,15 +23,15 @@ def get_position():
     return plist
 
 ####  マーカー検知  ####
-def detect_marker():
+def detect_marker(img_rgb,template):
     ## 元画像読み込み
-    img_rgb = cv2.imread('7.png')
+    #img_rgb = cv2.imread('7.png')
     # グレースケール化し、保存
     img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 
 
     ## テンプレート画像読み込み
-    template = cv2.imread('hand.png', 0)
+    #template = cv2.imread('hand.png', 0)
     # 画像サイズ取得
     w, h = template.shape[::-1]
 
@@ -48,14 +48,14 @@ def detect_marker():
 
     # マッチした数だけ
     for pt in zip(*loc[::-1]):
-        print("左上:"+str(pt[0]))
+        #print("左上:"+str(pt[0]))
         # 左上座標と右下座標から四角形表示
         cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 4)
         cnt += 1
 
     # マッチしなかったら
     if cnt == 0:
-        print("Nothing")
+        #print("Nothing")
         return False
 
 
@@ -74,5 +74,5 @@ def detect_marker():
 if __name__ == '__main__':
     detect_marker()
     positionList = get_position()
-    print(len(positionList))
+    #print(len(positionList))
 
