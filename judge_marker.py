@@ -71,8 +71,9 @@ def judge_marker():
     # XとYの平均を計算
     xAve = sum(XList)/len(XList)
     yAve = sum(YList)/len(YList)
-    print("xAve:"+str(xAve))
-    print("yAve:"+str(yAve))
+
+    #print("xAve:"+str(xAve))
+    #print("yAve:"+str(yAve))
 
     # Listをそれぞれ小さい順に並び替える
     XList.sort()
@@ -86,11 +87,12 @@ def judge_marker():
             break
         cnt += 1
     
-    print("Xlist[cnt-1]:"+str(XList[cnt-1]))
-    print("Ylist[cnt-1]:"+str(YList[cnt-1]))
-    print("わかれめ")
-    print("XList[cnt]:"+str(XList[cnt]))
-    print("YList[cnt]:"+str(YList[cnt]))
+
+    #print("Xlist[cnt-1]:"+str(XList[cnt-1]))
+    #print("Ylist[cnt-1]:"+str(YList[cnt-1]))
+    #print("わかれめ")
+    #print("XList[cnt]:"+str(XList[cnt]))
+    #print("YList[cnt]:"+str(YList[
 
     # 左右マーカーの左上座標特定終了
     if XList[cnt-1] < xAve:
