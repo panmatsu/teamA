@@ -55,6 +55,8 @@ def judge_marker():
     # ただ左右すべてのXとYだけに振り分けるリスト
     XList = [-1]
     YList = [-1]
+    del XList[:]
+    del YList[:]
 
     # 左右のマーカーの位置座標
     RightList = [-1]
@@ -65,14 +67,14 @@ def judge_marker():
         if i%2 == 0:
             # 偶数のとき
             # X座標リストに追加する
-            if XList[0] == -1:
-                XList[0] = positionList[i]
+            #if XList[0] == -1:
+            #    XList[0] = positionList[i]
             XList.append(positionList[i])
         else:
             # 奇数のとき
             # Y座標リストに追加する
-            if YList[0] == -1:
-                YList[0] = positionList[i]
+            #if YList[0] == -1:
+            #    YList[0] = positionList[i]
             YList.append(positionList[i])
     
     # XとYの平均を計算
@@ -94,6 +96,8 @@ def judge_marker():
     if(diff_x > diff_y):
         # Xの差が大きければXを比較対象
         while(1):
+            if cnt-1 > len(XList):
+                break
             # 平均を超えたcntで終了
             if XList[cnt] > xAve:
                 break
@@ -101,6 +105,8 @@ def judge_marker():
     else:
         # Yの差が大きければYを比較対象
         while(1):
+            if cnt-1 > len(YList):
+                break 
             # 平均を超えたcntで終了
             if YList[cnt] > yAve:
                 break
