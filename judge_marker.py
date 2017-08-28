@@ -1,6 +1,6 @@
 ###############################################
 ##                                       
-##  指定枠内にマーカーが3秒間存在するか判定する  
+##  指定枠内にマーカーが存在するか判定する  
 ##
 ##  return:(bool)true or false
 ##
@@ -22,14 +22,17 @@ lock_position_left  = [0,0,700,700]
 
 
 # かぎ位置設定
+# 引数は上(line:13)のマーカーの鍵位置参照
 def set_lock_position(rt, rb, lt, lb):
 
+    # 右マーカーの座標リスト
     global lock_position_right
     # 右マーカーの上
     lock_position_right[0] = rt
     # 右マーカーの下
     lock_position_right[1] = rb
 
+    # 左マーカーの座標リスト
     global lock_position_left
     # 左マーカーの上
     lock_position_left[0] = lt
@@ -44,6 +47,10 @@ def judge_marker():
 
     # detect_red_circle.pyから円の中心座標List(x,y)を持ってくる
     positionList = get_position()
+
+    # 座標リストの大きさが0だった場合Falseを返却
+    if len(positionList) == 0:
+        return False
 
     # ただ左右すべてのXとYだけに振り分けるリスト
     XList = [-1]
@@ -78,13 +85,25 @@ def judge_marker():
     XList.sort()
     YList.sort()
 
-    # 左右で分かれる場所を確認する
-    # 課題：平均からXとYの値がより離れているほうを分岐条件にする
+    ############ 左右で分かれる場所を確認する  ############
+    # Xの差とYの差が大きいほうを比較対象にする
+    diff_x = XList[len(XList)-1] - XList[0]
+    diff_y = YList[len(YList)-1] - YList[0]
     cnt = 0
-    while(1):   
-        if YList[cnt] > yAve:
-            break
-        cnt += 1
+    if(diff_x > diff_y):
+        # Xの差が大きければXを比較対象
+        while(1):
+            # 平均を超えたcntで終了
+            if XList[cnt] > xAve:
+                break
+            cnt += 1
+    else:
+        # Yの差が大きければYを比較対象
+        while(1):
+            # 平均を超えたcntで終了
+            if YList[cnt] > yAve:
+                break
+            cnt += 1
     
     print("Xlist[cnt-1]:"+str(XList[cnt-1]))
     print("Ylist[cnt-1]:"+str(YList[cnt-1]))
@@ -136,7 +155,7 @@ def judge_marker():
 
 
 ############################### Test  #################
-##if __name__ == '__main__':
+if __name__ == '__main__':
 
 
     ##  test  ##
@@ -144,7 +163,7 @@ def judge_marker():
     if detect_red_circle(img) == True :
         print("TRUE")
     
-   if judge_marker() == True:
+    if judge_marker() == True:
         print("判定成功")
     else:
         print("判定失敗")
