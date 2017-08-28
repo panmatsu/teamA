@@ -159,9 +159,30 @@ def judge_marker():
 ############################### Test  #################
 if __name__ == '__main__':
 
+#    cap = cv2.VideoCapture(0)
+
+#    detect_flag = False
+#    judge_flag = False
+
+#    while(1):
+#        ret, frame = cap.read()
+
+#        if detect_flag == False :
+#            if detect_red_circle(frame) == True:
+ #               detect_flag = True
+        
+#        if detect_flag == True & judge_flag == False:
+ #           if judge_marker() == True:
+ #               judge_flag = True
+#                print("判定成功")
+ #           else:
+#               print("判定失敗")
+#
+#        if detect_flag == True & judge_flag == True:
+#            print("終了")
 
     ##  test  ##
-    img = cv2.imread('a.png')
+    img = cv2.imread('red_circles.png')
     if detect_red_circle(img) == True :
         print("TRUE")
     
