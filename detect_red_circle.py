@@ -65,7 +65,7 @@ def detect_red_circle(frame):
     # 取りたい色をHSVでパラメータ設定
     # (画像、最低色相角、最高色相角、彩度閾値、明度閾値)
     #############  パラメーターを適切な値にする必要あり  ##############
-    color_1 = extract_color(frame, 340, 359, 50, 75)  #red
+    color_1 = extract_color(frame, 340, 20, 50, 75)  #red
     #cv2.imshow("color_1", color_1)
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
@@ -116,31 +116,31 @@ def detect_red_circle(frame):
     return True
 
 
-#if __name__ == '__main__':
+if __name__ == '__main__':
     # ファイル読み込み
     #cap = cv2.VideoCapture("marker_key.avi")
- #   cap = cv2.VideoCapture(0)
- #   while True:
+    cap = cv2.VideoCapture(0)
+    while True:
         # フレーム読み込み
-#        ret, img = cap.read() 
-#
-#        cv2.imshow("Img",img)
+        ret, img = cap.read() 
+
+        cv2.imshow("Img",img)
         
         # キーボード確認
-#        key = cv2.waitKey(10)
-#        if key == ord('q'):
+        key = cv2.waitKey(10)
+        if key == ord('q'):
             # Qが押されたら終了
-#            break
+            break
 
         #elif key == ord('j'):
             # Jが押されたら
-#        detect_red_circle(img)
+        detect_red_circle(img)
 
-#    polist = get_position()
+    polist = get_position()
 
-#    print(len(polist))
-#    for i in polist:
-#        print(i)
+    print(len(polist))
+    for i in polist:
+        print(i)
 
 
 
