@@ -4,8 +4,7 @@ import numpy as np
 import os
 import time
 from judge_marker import *
-from marker_detection import *
-from matplotlib import pyplot as pyplot
+from detect_red_circle import *
 
 #カメラキャプチャー
 cam = cv2.VideoCapture(0)
@@ -16,7 +15,6 @@ back = cv2.imread('back.png')
 #現時点では鍵の探索は未実装
 #鍵
 key_pose = cv2.imread('pose.png')
-marker = cv2.imread('template.png',
 
 
 #特徴量計算(体)
@@ -31,7 +29,7 @@ t = 50
 # 平滑下のパラメータ
 n = 5
 #3秒間に何フレームで認証するか
-f = 100
+f = 10
 #ノイズ消しのパラメータ
 kernelo = np.ones((5,5),np.uint8)
 #穴埋めパラメータ
@@ -68,21 +66,25 @@ while(1):
         break
 
     #人物認識実行
-    if detect_marker(frame,marker) == False:
-        human,r = hog.detectMultiScale(frame,**hogParams)
-        face = cascade.detectMultiScale(frame, scaleFactor=1.2, minNeighbors=2, minSize=(10, 10))
-        if human == [] and face == []:
-            human_flag = False
-        else:
-            human_flag = True
-            for(x,y,w,h) in human:
-                cv2.rectangle(frame,(x,y),(x+w,y+h),body_color,3)
-            for rect in face:
-                cv2.rectangle(frame, tuple(rect[0:2]),tuple(rect[0:2] + rect[2:4]), face_color, thickness=2)
+    human,r = hog.detectMultiScale(frame,**hogParams)
+    face = cascade.detectMultiScale(frame, scaleFactor=1.2, minNeighbors=2, minSize=(10, 10))
+    
+    if human != [] and face != []:
+        human_flag = True
+        for(x,y,w,h) in human:
+            cv2.rectangle(frame,(x,y),(x+w,y+h),body_color,3)
+        for rect in face:
+            cv2.rectangle(frame, tuple(rect[0:2]),tuple(rect[0:2] + rect[2:4]), face_color, thickness=2)
+        print('人物発見')
+    else:
+        human_flag = False
+        print('人物未発見')
+
     #human_flag==Trueが3sec続く
     #    marker_flag = True
     if human_flag == True and time_start == None and marker_key != False:
         time_start = time.time()
+        print('時間計測開始')
     if time_start != None and human_flag == True:
         human_frame_per_3sec = human_frame_per_3sec + 1
     if time_start != None and time.time() - time_start > 3.0 and human_frame_per_3sec > f:
@@ -99,10 +101,8 @@ while(1):
     if marker_flag == True:
         #マーカー認証
         #範囲内にいる->marker_key = True
-        if(detect_marker(frame,marker)==True):
-            positionList = get_position()
-            for i in positionList:
-                if judge_maker(positionList) == True:
+        if(detect_red_circle(frame)==True):
+                if judge_maker() == True:
                     marker_key = True
                 else:
                     marker_key = False
