@@ -55,17 +55,17 @@ def detect_red_circle(frame):
     global positionList
     del positionList[:]
     
-    cv2.imshow("frame", frame)
+    #cv2.imshow("frame", frame)
     
 
     # 取りたい色をHSVでパラメータ設定
     # (画像、最低色相角、最高色相角、彩度閾値、明度閾値)
     #############  パラメーターを適切な値にする必要あり  ##############
     color_1 = extract_color(frame, 0, 360, 50, 75)  #red
-    cv2.imshow("color_1", color_1)
+    #cv2.imshow("color_1", color_1)
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
-    cv2.imshow("median", median)
+    #cv2.imshow("median", median)
         
     #円検出
     #############  パラメーターを適切な値にする必要あり  ##############
@@ -86,22 +86,22 @@ def detect_red_circle(frame):
     else:
         # 円が見つからなかった
         print("D::detect_redcircle::　NO  CIRCLE ")
-        while True:
-            # qを押したら終了。
-            k = cv2.waitKey(1)
-            if k == ord('q'):
-                break
+        #while True:
+        #    # qを押したら終了。
+        #    k = cv2.waitKey(1)
+        #    if k == ord('q'):
+        #       break
         return False
 
     
-    cv2.imshow("capture", frame)
+    #cv2.imshow("capture", frame)
 
 
-    while True:
+    #while True:
         # qを押したら終了。
-        k = cv2.waitKey(1)
-        if k == ord('q'):
-            break
+    #    k = cv2.waitKey(1)
+    #    if k == ord('q'):
+    #        break
         
 
 
