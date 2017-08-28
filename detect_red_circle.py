@@ -70,11 +70,6 @@ def detect_red_circle(frame):
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
     cv2.imshow("median", median)
-    while True:
-        # qを押したら終了。
-        k = cv2.waitKey(1)
-        if k == ord('q'):
-            break
   
     #円検出
     #############  パラメーターを適切な値にする必要あり  ##############
@@ -123,6 +118,7 @@ if __name__ == '__main__':
     while True:
         # フレーム読み込み
         ret, img = cap.read() 
+        detect_red_circle(img)
 
         cv2.imshow("Img",img)
         
@@ -134,7 +130,6 @@ if __name__ == '__main__':
 
         #elif key == ord('j'):
             # Jが押されたら
-        detect_red_circle(img)
 
     polist = get_position()
 
