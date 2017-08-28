@@ -4,8 +4,7 @@ import numpy as np
 import os
 import time
 from judge_marker import *
-from marker_detection import *
-from matplotlib import pyplot as pyplot
+from detect_red_circle import *
 
 #カメラキャプチャー
 cam = cv2.VideoCapture(0)
@@ -16,7 +15,6 @@ back = cv2.imread('back.png')
 #現時点では鍵の探索は未実装
 #鍵
 key_pose = cv2.imread('pose.png')
-marker = cv2.imread('template.png',
 
 
 #特徴量計算(体)
@@ -31,7 +29,7 @@ t = 50
 # 平滑下のパラメータ
 n = 5
 #3秒間に何フレームで認証するか
-f = 100
+f = 15
 #ノイズ消しのパラメータ
 kernelo = np.ones((5,5),np.uint8)
 #穴埋めパラメータ
@@ -49,6 +47,7 @@ cascade_path = "haarcascade_frontalface_alt.xml"
 cascade = cv2.CascadeClassifier(cascade_path)
 
 human_flag = False
+marker_flag = False
 marker_key = False
 getFrame_flag = False
 
@@ -57,74 +56,85 @@ poseWhitePix = []
 
 frame_count = 0
 
-time_start = None
-marker_time_start = None
+time_start = 0.0
+marker_time_start = 0.0
 
 human_frame_per_3sec = 0
 marker_frame_per_3sec = 0
+
+count = 0
 while(1):
     ret, frame = cam.read()
     if ret == False:
         break
-
+    
     #人物認識実行
-    if detect_marker(frame,marker) == False:
+    if marker_flag == False:
         human,r = hog.detectMultiScale(frame,**hogParams)
         face = cascade.detectMultiScale(frame, scaleFactor=1.2, minNeighbors=2, minSize=(10, 10))
-        if human == [] and face == []:
-            human_flag = False
-        else:
+    
+        if len(human) != 0 and len(face) != 0:
             human_flag = True
             for(x,y,w,h) in human:
                 cv2.rectangle(frame,(x,y),(x+w,y+h),body_color,3)
             for rect in face:
                 cv2.rectangle(frame, tuple(rect[0:2]),tuple(rect[0:2] + rect[2:4]), face_color, thickness=2)
+            print('人物発見')
+        else:
+            human_flag = False
+            print('人物未発見')
+
     #human_flag==Trueが3sec続く
     #    marker_flag = True
-    if human_flag == True and time_start == None and marker_key != False:
+    if human_flag == True and time_start==0.0 and marker_flag == False:
         time_start = time.time()
-    if time_start != None and human_flag == True:
+        print('時間計測開始')
+    if time_start != 0 and human_flag == True:
         human_frame_per_3sec = human_frame_per_3sec + 1
-    if time_start != None and time.time() - time_start > 3.0 and human_frame_per_3sec > f:
+    if time_start != 0 and time.time() - time_start > 3.0 and human_frame_per_3sec > f:
         marker_flag = True
-        time_start = None
+        time_start = 0
         human_frame_per_3sec = 0
-    else:
+        print('人物認証')
+    if time_start != 0 and time.time() - time_start > 3.0 and human_frame_per_3sec < f:
         marker_flag = False
-        time_start = None
+        time_start = 0
         human_frame_per_3sec = 0
-        
+        print('人物不認証')
 
 
     if marker_flag == True:
         #マーカー認証
         #範囲内にいる->marker_key = True
-        if(detect_marker(frame,marker)==True):
-            positionList = get_position()
-            for i in positionList:
-                if judge_maker(positionList) == True:
+        if(detect_red_circle(frame)==True):
+                if judge_marker() == True:
                     marker_key = True
+                    print('赤円範囲内')
                 else:
                     marker_key = False
+                    print('赤円範囲外')
       
-    #marker_key==Trueが3sec続く
-    #   getFrame_flag = True
-    if marker_key == True and marker_time_start == None and marker_key != False:
-        marker_time_start = time.time()
-    if time_start != None and marker_key == True:
-        marker_frame_per_3sec = marker_frame_per_3sec + 1
-    if marker_time_start != None and time.time() - marker_time_start > 3.0 and marker_frame_per_3sec > f:
-        getFrame_flag = True
-        marker_time_start = None
-        maker_frame_per_3sec = 0
-    else:
-        getFrame_flag = False
-        marker_time_start = None
-        maker_frame_per_3sec = 0
-        
+        #marker_key==Trueが3sec続く
+        #   getFrame_flag = True
+        if marker_key == True and marker_time_start == 0 and marker_key == True:
+            marker_time_start = time.time()
+            print('時間測定開始(マーカー)')
+        if marker_time_start != 0 and marker_key == True:
+            marker_frame_per_3sec = marker_frame_per_3sec + 1
+        if marker_time_start != 0 and time.time() - marker_time_start > 3.0 and marker_frame_per_3sec > f:
+            getFrame_flag = True
+            marker_time_start = 0.0
+            maker_frame_per_3sec = 0
+            print('マーカー認証')
+        if marker_time_start != 0 and time.time() - marker_time_start > 3.0 and marker_frame_per_3sec:
+            getFrame_flag = False
+            marker_time_start = 0.0
+            maker_frame_per_3sec = 0
+            print('マーカー不認証')
 
     #getFrame_flag==Tureなら１０フレーム取得
     if getFrame_flag == True and frame_count < 10:
+        print('フレーム取得')
         poseList.extend(frame)
         frame_count = frame_count + 1
     
