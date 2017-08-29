@@ -78,7 +78,7 @@ def detect_red_circle(frame):
     #cv2.imshow("color_1", color_1)
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
-    #cv2.imshow("median", median)
+    cv2.imshow("median", median)
     
     #円検出
     #############  パラメーターを適切な値にする必要あり  ##############
