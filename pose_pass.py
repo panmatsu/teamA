@@ -3,18 +3,23 @@ import cv2
 import numpy as np 
 import os
 import time
+import sys
 from judge_marker import *
 from detect_red_circle import *
 
-#カメラキャプチャー
-cam = cv2.VideoCapture(0)
+
+if len(sys.argv) == 1:
+    cam = cam = cv2.VideoCapture(0)
+if len(sys.argv) == 2:
+    cam = cv2.VideoCapture(argv[1])
+
 
 #背景画像
-back = cv2.imread('back.png')
+back = cv2.imread('back.png',0)
 
 #現時点では鍵の探索は未実装
 #鍵
-key_pose = cv2.imread('pose.png')
+key_pose = cv2.imread('pose.png',0)
 
 
 #特徴量計算(体)
@@ -51,8 +56,7 @@ marker_flag = False
 marker_key = False
 getFrame_flag = False
 
-poseFrameList = []
-poseWhitePix = []
+poseWhitePix = 0
 
 frame_count = 0
 
@@ -68,17 +72,24 @@ while(1):
     if ret == False:
         break
     
+    humanFrame = frame.copy()
+
     #人物認識実行
     if marker_flag == False:
-        human,r = hog.detectMultiScale(frame,**hogParams)
-        face = cascade.detectMultiScale(frame, scaleFactor=1.2, minNeighbors=2, minSize=(10, 10))
-    
+        human,r = hog.detectMultiScale(humanFrame,**hogParams)
+        face = cascade.detectMultiScale(humanFrame, scaleFactor=1.2, minNeighbors=2, minSize=(10, 10))
+        
+        if len(human) != 0:
+            for(x,y,w,h) in human:
+                cv2.rectangle(humanFrame,(x,y),(x+w,y+h),body_color,3)
+            print('身体認識')
+        if len(face) != 0:
+            for rect in face:
+                cv2.rectangle(humanFrame, tuple(rect[0:2]),tuple(rect[0:2] + rect[2:4]), face_color, thickness=2)
+            print('顔認識')
+           
         if len(human) != 0 and len(face) != 0:
             human_flag = True
-            for(x,y,w,h) in human:
-                cv2.rectangle(frame,(x,y),(x+w,y+h),body_color,3)
-            for rect in face:
-                cv2.rectangle(frame, tuple(rect[0:2]),tuple(rect[0:2] + rect[2:4]), face_color, thickness=2)
             print('人物発見')
         else:
             human_flag = False
@@ -121,6 +132,7 @@ while(1):
             print('時間測定開始(マーカー)')
         if marker_time_start != 0 and marker_key == True:
             marker_frame_per_3sec = marker_frame_per_3sec + 1
+            print(str(int(time.time() - marker_time_start)+'sec')
         if marker_time_start != 0 and time.time() - marker_time_start > 3.0 and marker_frame_per_3sec > f:
             getFrame_flag = True
             marker_time_start = 0.0
@@ -135,44 +147,48 @@ while(1):
     #getFrame_flag==Tureなら１０フレーム取得
     if getFrame_flag == True and frame_count < 10:
         print('フレーム取得')
-        poseList.extend(frame)
+        filename = 'frame' + str(frame_count) + '.png'
+        cv2.imwrite(filename,frame)
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+        fgmask = cv2.absdiff(gray,back)
+        ret, binal = cv2.threshold(fgmask, t, 255, cv2.THRESH_BINARY)
+        binal = cv2.medianBlur(binal, n)
+        erosion = cv2.erode(binal,kernelo,iterations = 1)
+        opening = cv2.morphologyEx(binal, cv2.MORPH_OPEN, kernelo)
+        closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernelc)
+        result = cv2.absdiff(closing,key_pose)
+        name = 'diff'+str(frame_count)+'.png'
+        cv2.imwrite(name,result)
+        print(cv2.countNonZero)
+        poseWhitePix += cv2.countNonZero(result)
+        
+
         frame_count = frame_count + 1
     
   
     if frame_count == 10:
         #フレームリストのシルエット化
         #鍵との比較=>poseWhitePixリストに追加
-        for i in poseList:
-            fgmask = cv2.absdiff(i,back)
-            ret, binal = cv2.threshold(fgmask, t, 255, cv2.THRESH_BINARY)
-            binal = cv2.medianBlur(binal, n)
-            erosion = cv2.erode(binal,kernel,iterations = 1)
-            opening = cv2.morphologyEx(binal, cv2.MORPH_OPEN, kernelo)
-            closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernelc)
-            result = cv2.absdiff(closing,key_pose)
-            poseWhitePix.extend(cv2.countNonZero(result))
-        #リストの平均値取得
-        poseAve = sum(poseWhitePix)/len(poseWhitePix)
+        poseAve = poseWhitePix/frame_count
         #ポーズシルエット開錠の判定
+        #リストの平均値取得
         if poseAve < j:
             pose_key = True
-        else:
-            pose_key = False
-        
-        if pose_key == True:
             #開錠処理
-            print('open')
+            print('ポーズ認証')
             break
         else:
-            print('close')
+            pose_key = False
+            print('ポーズ不認証')
             marker_key = False
             getFrame_flag = False
             frame_count = 0
-            poseFrameList = []
             poseWhitePix = []
         
         
     cv2.imshow('result', frame)
+    cv2.imshow('human', humanFrame)
     key = cv2.waitKey(30)
     if key == ord('q'):
         break
