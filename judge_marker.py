@@ -138,10 +138,10 @@ def judge_marker(img):
         LeftList.append(YList[cnt])
     
     # 左：ピンク
-    cv2.circle(frame,(LeftList[0],LeftList[1]),1,(255,0,255),2)
+    cv2.circle(img,(LeftList[0],LeftList[1]),1,(255,0,255),2)
     # 右：水色
-    cv2.circle(frame,(RightList[0],RightList[1]),1,(255,255,0),2)
-    cv2.imshow("capture", frame)
+    cv2.circle(img,(RightList[0],RightList[1]),1,(255,255,0),2)
+    cv2.imshow("capture", img)
     
     # 左右マーカーと鍵マーカーを比較する
     leftFlag = False
