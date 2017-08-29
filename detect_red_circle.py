@@ -79,7 +79,7 @@ def detect_red_circle(frame):
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
     #cv2.imshow("median", median)
-  
+    
     #円検出
     #############  パラメーターを適切な値にする必要あり  ##############
     circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,3,20,param1=50,param2=80,minRadius=10,maxRadius=200)
@@ -103,7 +103,7 @@ def detect_red_circle(frame):
         #    # qを押したら終了。
         #    k = cv2.waitKey(1)
         #    if k == ord('q'):
-        #        break
+
         return False
 
     
@@ -114,7 +114,8 @@ def detect_red_circle(frame):
         # qを押したら終了。
     #    k = cv2.waitKey(1)
     #    if k == ord('q'):
-    #wqe        break
+    #        break
+        
     #cv2.destroyAllWindows()
 
     return True

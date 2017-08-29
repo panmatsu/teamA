@@ -58,6 +58,7 @@ def judge_marker(img):
         return False
 
     # ただ左右すべてのXとYだけに振り分けるリスト
+
     XList = []
     YList = []
 
@@ -67,10 +68,12 @@ def judge_marker(img):
         if i%2 == 0:
             # 偶数のとき
             # X座標リストに追加する
+
             XList.append(positionList[i])
         else:
             # 奇数のとき
             # Y座標リストに追加する
+
             YList.append(positionList[i])
     
     # XとYの平均を計算
@@ -91,6 +94,7 @@ def judge_marker(img):
     cnt = 0
     if diff_x > diff_y :
         # Xの差が大きければXを比較対象
+
         while cnt < len(XList)-1:
             # 平均を超えたcntで終了
             if XList[cnt] > xAve:
