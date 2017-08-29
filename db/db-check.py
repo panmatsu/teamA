@@ -6,7 +6,9 @@ import sys
 import re
 
 # コマンドラインより検索ワード取得
-pas = sys.argv[1]
+print("please write your ID or name(English) >")
+rpas = sys.stdin.readline()
+pas = rpas.rstrip("\n")
 
 # 検索ワード1文字目が数字ならTrue
 a = re.match(r'\d+', pas)
@@ -24,11 +26,15 @@ c.execute(sql)
 for row1 in c:
     idnum = row1[0]
     name = row1[1]
-    rt = row1[2]
-    rb = row1[3]
-    lt = row1[4]
-    lb = row1[5]
-    pose = row1[6]
+    left_ltx = row1[2]
+    left_lty = row1[3]
+    left_rbx = row1[4]
+    left_rby = row1[5]
+    right_ltx = row1[6]
+    right_lty = row1[7]
+    right_rbx = row1[8]
+    right_rby = row1[9]
+    pose = row1[10]
 
 con.close()
 
