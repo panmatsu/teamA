@@ -99,7 +99,6 @@ def detect_red_circle(frame):
     median = cv2.morphologyEx(median, cv2.MORPH_OPEN, kernel)
     #cv2.imshow("dst",median)
   
-
     #円検出
     #############  パラメーターを適切な値にする必要あり  ##############
     circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,3,20,param1=50,param2=80,minRadius=5,maxRadius=50)

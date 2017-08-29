@@ -11,7 +11,7 @@ from detect_red_circle import *
 if len(sys.argv) == 1:
     cam = cam = cv2.VideoCapture(0)
 if len(sys.argv) == 2:
-    cam = cv2.VideoCapture(argv[1])
+    cam = cv2.VideoCapture(sys.argv[1])
 
 
 #背景画像
@@ -120,10 +120,10 @@ while(1):
         if(detect_red_circle(frame)==True):
                 if judge_marker(frame) == True:
                     marker_key = True
-                    print('赤円範囲内')
+                    print('黄円範囲内')
                 else:
                     marker_key = False
-                    print('赤円範囲外')
+                    print('黄円範囲外')
       
         #marker_key==Trueが3sec続く
         #   getFrame_flag = True
@@ -132,7 +132,6 @@ while(1):
             print('時間測定開始(マーカー)')
         if marker_time_start != 0 and marker_key == True:
             marker_frame_per_3sec = marker_frame_per_3sec + 1
-            print(str(int(time.time() - marker_time_start)+'sec')
         if marker_time_start != 0 and time.time() - marker_time_start > 3.0 and marker_frame_per_3sec > f:
             getFrame_flag = True
             marker_time_start = 0.0
@@ -160,7 +159,6 @@ while(1):
         result = cv2.absdiff(closing,key_pose)
         name = 'diff'+str(frame_count)+'.png'
         cv2.imwrite(name,result)
-        print(cv2.countNonZero)
         poseWhitePix += cv2.countNonZero(result)
         
 
@@ -177,14 +175,16 @@ while(1):
             pose_key = True
             #開錠処理
             print('ポーズ認証')
+            print('open')
             break
         else:
             pose_key = False
             print('ポーズ不認証')
+            print('close')
             marker_key = False
             getFrame_flag = False
             frame_count = 0
-            poseWhitePix = []
+            poseWhitePix = 0
         
         
     cv2.imshow('result', frame)
