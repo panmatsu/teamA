@@ -20,13 +20,17 @@ if tableName == 1:
 # table keysetの作成
 sql2 = u"""
 create table keyset (
-   id integer unique not null,
+    id integer unique not null,
     name text not null,
-   markrt integer not null,
-    markrb integer not null,
-    marklt integer not null,
-    marklb integer not null,
-    silhouette text not null
+    left_ltx integer not null,
+    left_lty integer not null,
+    left_rbx integer not null,
+    left_rby integer not null,
+    right_ltx integer not null,
+    right_lty integer not null,
+    right_rbx integer not null,
+    right_rby integer not null,
+    pose text not null
 );
 """
 con.execute(sql2)
