@@ -1,4 +1,13 @@
 # -*- codeing: utf-8 -*-
+###############################################
+##                                       
+##  画像内に赤円があるか確認し、あったら座標を保存 
+## 
+##  引数:img(画像)
+##
+##  return:(bool)true or false
+##
+##############################################
 import cv2
 import numpy as np
 
@@ -69,7 +78,7 @@ def detect_red_circle(frame):
     #cv2.imshow("color_1", color_1)
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
-    cv2.imshow("median", median)
+    #cv2.imshow("median", median)
   
     #円検出
     #############  パラメーターを適切な値にする必要あり  ##############
@@ -85,7 +94,7 @@ def detect_red_circle(frame):
             positionList.append(i[1])
             
             # 円の描画
-            cv2.circle(frame,(i[0],i[1]),1,(255,255,0),2)
+            #cv2.circle(frame,(i[0],i[1]),1,(255,255,0),2)
         
     else:
         # 円が見つからなかった
