@@ -1,6 +1,8 @@
 ###############################################
 ##                                       
 ##  指定枠内にマーカーが存在するか判定する  
+## 
+##  引数:img(画像)
 ##
 ##  return:(bool)true or false
 ##
@@ -43,36 +45,32 @@ def set_lock_position(rt, rb, lt, lb):
 ####  Main::マーカー判定  ####
 #全体座標リストから左右リストに振り分ける
 #左右リストは鍵の中に入ってるか確認
-def judge_marker():
+def judge_marker(img):
 
+    # ****リスト更新****
+    detect_red_circle(img)
     # detect_red_circle.pyから円の中心座標List(x,y)を持ってくる
     positionList = get_position()
 
-    # 座標リストの大きさが0だった場合Falseを返却
-    if len(positionList) == 0:
+    # 座標リストの大きさが2以下だった場合Falseを返却
+    # 十分なサンプルがないので
+    if len(positionList) < 2:
         return False
 
     # ただ左右すべてのXとYだけに振り分けるリスト
-    XList = [-1]
-    YList = [-1]
+    XList = []
+    YList = []
 
-    # 左右のマーカーの位置座標
-    RightList = [-1]
-    LeftList  = [-1]
 
     # 座標リストからXとYListに振り分ける
     for i in range(len(positionList)):
         if i%2 == 0:
             # 偶数のとき
             # X座標リストに追加する
-            if XList[0] == -1:
-                XList[0] = positionList[i]
             XList.append(positionList[i])
         else:
             # 奇数のとき
             # Y座標リストに追加する
-            if YList[0] == -1:
-                YList[0] = positionList[i]
             YList.append(positionList[i])
     
     # XとYの平均を計算
@@ -91,20 +89,21 @@ def judge_marker():
     diff_x = XList[len(XList)-1] - XList[0]
     diff_y = YList[len(YList)-1] - YList[0]
     cnt = 0
-    if(diff_x > diff_y):
+    if diff_x > diff_y :
         # Xの差が大きければXを比較対象
-        while(1):
+        while cnt < len(XList)-1:
             # 平均を超えたcntで終了
             if XList[cnt] > xAve:
                 break
             cnt += 1
     else:
         # Yの差が大きければYを比較対象
-        while(1):
+        while cnt < len(YList)-1:
             # 平均を超えたcntで終了
             if YList[cnt] > yAve:
                 break
             cnt += 1
+    
     
 
     #print("Xlist[cnt-1]:"+str(XList[cnt-1]))
@@ -113,19 +112,32 @@ def judge_marker():
     #print("XList[cnt]:"+str(XList[cnt]))
     #print("YList[cnt]:"+str(YList[
 
+        
+    # 左右のマーカーの位置座標
+    RightList = []
+    LeftList  = []
+    #rint("len_x:"+str(len(XList)))
+    #print("len_y:"+str(len(YList)))
+
     # 左右マーカーの左上座標特定終了
     if XList[cnt-1] < xAve:
         # 分け目前が平均より小さければ左マーカー
-        LeftList[0] = XList[cnt-1]
+        LeftList.append(XList[cnt-1])
         LeftList.append(YList[cnt-1])
-        RightList[0] = XList[cnt]
+        RightList.append(XList[cnt])
         RightList.append(YList[cnt])
     else:
         # 分け目後が平均より大きければ右マーカー
-        RightList[0] = XList[cnt-1]
+        RightList.append(XList[cnt-1])
         RightList.append(YList[cnt-1])
-        LeftList[0]  = XList[cnt]
+        LeftList.append(XList[cnt])
         LeftList.append(YList[cnt])
+    
+    # 左：ピンク
+    cv2.circle(frame,(LeftList[0],LeftList[1]),1,(255,0,255),2)
+    # 右：水色
+    cv2.circle(frame,(RightList[0],RightList[1]),1,(255,255,0),2)
+    cv2.imshow("capture", frame)
     
     # 左右マーカーと鍵マーカーを比較する
     leftFlag = False
@@ -159,13 +171,37 @@ def judge_marker():
 ############################### Test  #################
 if __name__ == '__main__':
 
+    cap = cv2.VideoCapture(0)
+    mode = 0
+
+    while(1):
+        ret, frame = cap.read()
+
+        if mode == 0:
+            if detect_red_circle(frame) == True:
+                mode += 1
+        elif mode == 1:
+            if judge_marker(frame) == True:
+                mode += 0
+        else:
+            print("判定終了")
+            break
+
+                # キーボード確認
+        key = cv2.waitKey(10)
+        if key == ord('q'):
+            # Qが押されたら終了
+            break
+    
+    cv2.destroyAllWindows()
+    cap.release()
 
     ##  test  ##
-    img = cv2.imread('a.png')
-    if detect_red_circle(img) == True :
-        print("TRUE")
-    
-    if judge_marker() == True:
-        print("判定成功")
-    else:
-        print("判定失敗")
+#    img = cv2.imread('red_circles.png')
+#    if detect_red_circle(img) == True :
+#        print("TRUE")
+#    
+#    if judge_marker() == True:
+#        print("判定成功")
+#    else:
+#        print("判定失敗")
