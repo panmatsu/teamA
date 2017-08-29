@@ -159,7 +159,6 @@ while(1):
         result = cv2.absdiff(closing,key_pose)
         name = 'diff'+str(frame_count)+'.png'
         cv2.imwrite(name,result)
-        print(cv2.countNonZero)
         poseWhitePix += cv2.countNonZero(result)
         
 
