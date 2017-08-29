@@ -10,6 +10,7 @@
 ##############################################
 import cv2
 import numpy as np
+from matplotlib import pyplot as plt
 
 
 # メンバ変数
@@ -74,18 +75,37 @@ def detect_red_circle(frame):
     # 取りたい色をHSVでパラメータ設定
     # (画像、最低色相角、最高色相角、彩度閾値、明度閾値)
     #############  パラメーターを適切な値にする必要あり  ##############
-    color_1 = extract_color(frame, 340, 20, 50, 75)  #red
+
+    # ****  赤  ****
+    #color_1 = extract_color(frame, 350, 20, 70, 70)
+    
+    # ****  黄  ****
+    #   割と精度いい
+    color_1 = extract_color(frame, 55, 65, 90, 90)
+
+    # ****  青  ****
+    #color_1 = extract_color(frame, 190, 210, 80, 80)
+
+    # ****  ターコイズ  ****
+    #color_1 = extract_color(frame, 160, 180, 60, 75)
+
     #cv2.imshow("color_1", color_1)
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
     #cv2.imshow("median", median)
-    
+
+    kernel = np.ones((5,5),np.uint8)
+    # ノイズ除去
+    median = cv2.morphologyEx(median, cv2.MORPH_OPEN, kernel)
+    #cv2.imshow("dst",median)
+  
+
     #円検出
     #############  パラメーターを適切な値にする必要あり  ##############
-    circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,3,20,param1=50,param2=80,minRadius=10,maxRadius=200)
+    circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,3,20,param1=50,param2=80,minRadius=5,maxRadius=50)
     if circles is not None:
         # 円が見つかった
-        print("D::detect_red_circle.py:: detected!! ")
+        print("D::detect_red_circle:: detected!! ")
         circles = np.uint16(np.around(circles))
         for i in circles[0,:]:
 
@@ -94,11 +114,11 @@ def detect_red_circle(frame):
             positionList.append(i[1])
             
             # 円の描画
-            #cv2.circle(frame,(i[0],i[1]),1,(255,255,0),2)
+            cv2.circle(frame,(i[0],i[1]),1,(255,255,0),2)
         
     else:
         # 円が見つからなかった
-        print("D::detect_redcircle::　NO  CIRCLE ")
+        print("D::detect_red_circle::　NO  CIRCLE ")
         #while True:
         #    # qを押したら終了。
         #    k = cv2.waitKey(1)
@@ -107,7 +127,7 @@ def detect_red_circle(frame):
         return False
 
     
-    #cv2.imshow("capture", frame)
+    cv2.imshow("capture", frame)
 
 
     #while True:
