@@ -19,8 +19,8 @@ from detect_red_circle import *
 # 2: 四角形右下X座標
 # 3: 　〃　 〃 Y 〃
 ##################################
-lock_position_right = [0,0,700,700]
-lock_position_left  = [0,0,700,700]
+lock_position_right = [240,110,285,150]
+lock_position_left  = [420,260,473,300]
 
 
 # かぎ位置設定
@@ -69,6 +69,14 @@ def judge_marker(img):
     if len(positionList) < 2:
         return False
 
+    # 鍵マーカー認識領域描画
+    global lock_position_left
+    global lock_position_right
+    # 左：ピンク
+    cv2.rectangle(img, (lock_position_left[0],lock_position_left[1]),(lock_position_left[2],lock_position_left[3]),(255,0,255), 2)
+    # 右：水色
+    cv2.rectangle(img, (lock_position_right[0],lock_position_right[1]),(lock_position_right[2],lock_position_right[3]),(255,255,0), 2)
+    cv2.imshow("Judge",img)
 
     
     # 左鍵マーカー完了フラグ
@@ -80,7 +88,6 @@ def judge_marker(img):
     # 座標リストと鍵マーカーを比較する
     while cnt < len(positionList)-2:
 
-  
         if lock_position_left[0] < positionList[cnt]:
             # 左上ｘより大きく
             if lock_position_left[2] > positionList[cnt]:
