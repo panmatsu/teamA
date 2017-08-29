@@ -2,6 +2,7 @@
 import cv2
 import numpy as np
 
+
 # メンバ変数
 positionList = [-1]
 
@@ -50,6 +51,9 @@ def extract_color(src, h_low, h_high, s_st, v_st):
 #########################################
 ##  赤い円を検出し、中心点を返却 ##
 def detect_red_circle(frame):
+
+    global positionList
+    del positionList[:]
     
     cv2.imshow("frame", frame)
     
@@ -73,15 +77,8 @@ def detect_red_circle(frame):
         for i in circles[0,:]:
 
             # positionListに円中心のXYを代入
-            global positionList
-            if positionList[0] == -1:
-                # 最初の場合のみ直接代入
-                positionList[0] = i[0]
-                positionList.append(i[1])
-            else:
-                # 通常は、リストに追加するだけ
-                positionList.append(i[0])
-                positionList.append(i[1])
+            positionList.append(i[0])
+            positionList.append(i[1])
             
             # 円の描画
             cv2.circle(frame,(i[0],i[1]),1,(255,255,0),2)
@@ -89,7 +86,6 @@ def detect_red_circle(frame):
     else:
         # 円が見つからなかった
         print("D::detect_redcircle::　NO  CIRCLE ")
-        cnt = 0
         while True:
             # qを押したら終了。
             k = cv2.waitKey(1)
@@ -99,6 +95,8 @@ def detect_red_circle(frame):
 
     
     cv2.imshow("capture", frame)
+
+
     while True:
         # qを押したら終了。
         k = cv2.waitKey(1)
@@ -115,15 +113,17 @@ def detect_red_circle(frame):
     return True
 
 
-##if __name__ == '__main__':
-##    img = cv2.imread('a.png')
+if __name__ == '__main__':
+    img = cv2.imread('a.png')
     
-##    detect_red_circle(img)
+    detect_red_circle(img)
 
-##    plist = get_position()
+    polist = get_position()
 
-##    for i in plist:
-##        print(i)
+    print(len(polist))
+    for i in polist:
+        print(i)
+
 
 
 
