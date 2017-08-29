@@ -107,7 +107,7 @@ while(1):
         #マーカー認証
         #範囲内にいる->marker_key = True
         if(detect_red_circle(frame)==True):
-                if judge_marker() == True:
+                if judge_marker(frame) == True:
                     marker_key = True
                     print('赤円範囲内')
                 else:
