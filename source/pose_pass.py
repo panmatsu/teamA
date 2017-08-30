@@ -4,9 +4,11 @@ import numpy as np
 import os
 import time
 import sys
+import sqlite3
 from judge_marker import *
 from detect_red_circle import *
 from pose_detection import *
+from db_check import *
 
 if len(sys.argv) == 1:
     cam = cam = cv2.VideoCapture(0)
@@ -17,9 +19,27 @@ if len(sys.argv) == 2:
 #背景画像
 back = cv2.imread('back.png',0)
 
-#現時点では鍵の探索は未実装
+#dbから鍵参照
+while(1):
+    db = getList()
+    if db != None:
+        break
+for row1 in c:
+    idnum = row1[0]
+    name = row1[1]
+    left_ltx = row1[2]
+    left_lty = row1[3]
+    left_rbx = row1[4]
+    left_rby = row1[5]
+    right_ltx = row1[6]
+    right_lty = row1[7]
+    right_rbx = row1[8]
+    right_rby = row1[9]
+    db_pose = row1[10]
+    
 #鍵
-key_pose = cv2.imread('pose.png',0)
+key_pose = cv2.imread(db_pose,0)
+set_lock_position(left_ltx,left_lty,left_rbx,left_rby,right_ltx,right_lty,right_rbx,right_rby)
 
 
 #特徴量計算(体)
@@ -27,6 +47,9 @@ hog = cv2.HOGDescriptor()
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 #分類器のパラメータ
 hogParams = {'winStride':(8,8),'padding':(32,32),'scale':1.05}
+
+#秒数判定の最低フレーム数
+f = 15
 
 face_color = (255,0,0)
 body_color = (0,255,0)
