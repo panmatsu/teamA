@@ -81,7 +81,7 @@ def detect_red_circle(frame):
     
     # ****  黄  ****
     #   割と精度いい
-    color_1 = extract_color(frame, 55, 65, 90, 90)
+    color_1 = extract_color(frame, 50, 70, 70, 70)
 
     # ****  青  ****
     #color_1 = extract_color(frame, 190, 210, 80, 80)
@@ -90,9 +90,20 @@ def detect_red_circle(frame):
     #color_1 = extract_color(frame, 160, 180, 60, 75)
 
     #cv2.imshow("color_1", color_1)
+
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
-    #cv2.imshow("median", median)
+    cv2.imshow("Before", median)
+
+    # ８近傍フィルター
+    neiborhood8 = np.array([[1,1,1],
+                            [1,1,1],
+                            [1,1,1]],np.uint8)
+    # フィルターによる膨張処理                            
+    img_dilation = cv2.dilate(median, neiborhood8,iterations=1)
+    cv2.imshow("After",img_dilation)
+
+    median = img_dilation
 
     kernel = np.ones((5,5),np.uint8)
     # ノイズ除去
@@ -101,7 +112,7 @@ def detect_red_circle(frame):
   
     #円検出
     #############  パラメーターを適切な値にする必要あり  ##############
-    circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,3,20,param1=50,param2=80,minRadius=5,maxRadius=50)
+    circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,3,20,param1=50,param2=80,minRadius=1,maxRadius=50)
     if circles is not None:
         # 円が見つかった
         print("D::detect_red_circle:: detected!! ")
@@ -142,11 +153,15 @@ def detect_red_circle(frame):
 
 if __name__ == '__main__':
     # ファイル読み込み
-    #cap = cv2.VideoCapture("marker_key.avi")
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture("hira_05.avi")
+    #cap = cv2.VideoCapture(0)
     while True:
         # フレーム読み込み
         ret, img = cap.read() 
+        # フレームが終了したらおわり
+        if img is None:
+            break
+
         detect_red_circle(img)
 
         cv2.imshow("Img",img)
