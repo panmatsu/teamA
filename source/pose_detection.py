@@ -42,7 +42,7 @@ def cmp_pose(frame,frame_count):
 
 def judge_pose(poseWhitePix,frame_count):
     #ポーズ判定ピクセル
-    j = 7000
+    j = 6000
 
     poseAve = poseWhitePix/frame_count
     #ポーズシルエット開錠の判定

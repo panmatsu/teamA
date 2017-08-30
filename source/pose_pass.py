@@ -5,41 +5,63 @@ import os
 import time
 import sys
 import sqlite3
+import re
 from judge_marker import *
 from detect_red_circle import *
 from pose_detection import *
-from db_check import *
-
-if len(sys.argv) == 1:
-    cam = cam = cv2.VideoCapture(0)
-if len(sys.argv) == 2:
-    cam = cv2.VideoCapture(sys.argv[1])
-
 
 #背景画像
 back = cv2.imread('back.png',0)
 
 #dbから鍵参照
 while(1):
-    db = getList()
-    if db != None:
+        # コマンドラインより検索ワード取得
+    print("please write your ID or name(English) >")
+    rpas = sys.stdin.readline()
+    pas = rpas.rstrip("\n")
+    idnum = "nodata"
+
+    # 検索ワード1文字目が数字ならTrue
+    a = re.match(r'\d+', pas)
+    if a:
+        sql = "select * from keyset where id == " + pas
+    else:
+        sql = "select * from keyset where name == \"" + pas + "\""
+
+    # 同フォルダ内のdbkey.dbのDBを展開
+    con = sqlite3.connect("dbkey.db", isolation_level=None)
+
+    # table:keysetのhitした内容取得
+    c = con.cursor()
+    c.execute(sql)
+    for row1 in c:
+        idnum = row1[0]
+        name = row1[1]
+        left_ltx = row1[2]
+        left_lty = row1[3]
+        left_rbx = row1[4]
+        left_rby = row1[5]
+        right_ltx = row1[6]
+        right_lty = row1[7]
+        right_rbx = row1[8]
+        right_rby = row1[9]
+        db_pose = row1[10]
+
+    con.close()
+    if idnum == "nodata":
+        print("something wrong.")
+    else:
         break
-for row1 in c:
-    idnum = row1[0]
-    name = row1[1]
-    left_ltx = row1[2]
-    left_lty = row1[3]
-    left_rbx = row1[4]
-    left_rby = row1[5]
-    right_ltx = row1[6]
-    right_lty = row1[7]
-    right_rbx = row1[8]
-    right_rby = row1[9]
-    db_pose = row1[10]
-    
+
+print('you are '+name+'?')
 #鍵
 key_pose = cv2.imread(db_pose,0)
 set_lock_position(left_ltx,left_lty,left_rbx,left_rby,right_ltx,right_lty,right_rbx,right_rby)
+
+if len(sys.argv) == 1:
+    cam = cam = cv2.VideoCapture(0)
+if len(sys.argv) == 2:
+    cam = cv2.VideoCapture(sys.argv[1])
 
 
 #特徴量計算(体)
