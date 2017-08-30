@@ -86,7 +86,7 @@ def judge_marker(img):
     # 繰り返しカウント
     cnt = 0
     # 座標リストと鍵マーカーを比較する
-    while cnt < len(positionList)-2:
+    while cnt < len(positionList)-1:
 
         if lock_position_left[0] < positionList[cnt]:
             # 左上ｘより大きく
@@ -96,6 +96,7 @@ def judge_marker(img):
                     #左上ｙより大きく
                     if lock_position_left[3] > positionList[cnt+1]:
                         #右下ｙより小さいなら
+                        print("OKOKOKOKOKOKOKOKOKOKOKOKleft")
                         leftFlag = True
 
         if lock_position_right[0] < positionList[cnt]:
@@ -106,6 +107,8 @@ def judge_marker(img):
                     #左上ｙより大きく
                     if lock_position_right[3] > positionList[cnt+1]:
                         #右下ｙより小さいなら
+                        
+                        print("OKOKOKOKOKOKOKOKOKOKOKOKRight")
                         rightFlag = True
 
         # 両方フラグがtrueになったなら認識OK

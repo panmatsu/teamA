@@ -63,6 +63,8 @@ if len(sys.argv) == 1:
 if len(sys.argv) == 2:
     cam = cv2.VideoCapture(sys.argv[1])
 
+f=15
+
 
 #特徴量計算(体)
 hog = cv2.HOGDescriptor()
@@ -153,7 +155,7 @@ while(1):
                     print('黄円範囲内')
                 else:
                     marker_key = False
-                    print('黄円範囲外')
+                    #print('黄円範囲外')
       
         #marker_key==Trueが3sec続く
         #   getFrame_flag = True
@@ -175,7 +177,7 @@ while(1):
 
     #getFrame_flag==Tureなら１０フレーム取得
     if getFrame_flag == True and frame_count < 10:
-        poseWhitePix += cmp_pose(frame,frame_count)
+        poseWhitePix += cmp_pose(frame,frame_count,back)
         frame_count += frame_count
 
     if frame_count == 10:

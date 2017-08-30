@@ -13,6 +13,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+def nothing(x):
+    pass
+
 # メンバ変数
 positionList = [-1]
 
@@ -57,6 +60,16 @@ def get_position():
     return positionList
 
 
+cv2.namedWindow("Adjust")
+# create trackbar
+# trackbarName, windowName, 初期値, 最大数, onChange
+cv2.createTrackbar('h_low','Adjust',0,360,nothing)
+cv2.createTrackbar('h_high','Adjust',0,360,nothing)
+cv2.createTrackbar('s_st','Adjust',0,100,nothing)
+cv2.createTrackbar('v_st','Adjust',0,100,nothing)
+track = np.zeros((300,512,3),np.uint8)
+
+
 
 
 # +++public+++
@@ -81,7 +94,17 @@ def detect_red_circle(frame):
     
     # ****  黄  ****
     #   割と精度いい
-    color_1 = extract_color(frame, 50, 70, 70, 70)
+    # 昔の黄色のパラメーター
+    # color_1 = extract_color(frame, 50, 70, 70, 70)
+    
+    cv2.imshow("Adjust",track)
+
+    h_low = cv2.getTrackbarPos("h_low","Adjust")
+    h_high = cv2.getTrackbarPos("h_high","Adjust")
+    s_st = cv2.getTrackbarPos("s_st","Adjust")
+    v_st = cv2.getTrackbarPos("v_st","Adjust")
+
+    color_1 = extract_color(frame, h_low, h_high, s_st, v_st)
 
     # ****  青  ****
     #color_1 = extract_color(frame, 190, 210, 80, 80)
@@ -115,7 +138,7 @@ def detect_red_circle(frame):
     circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,3,20,param1=50,param2=80,minRadius=1,maxRadius=50)
     if circles is not None:
         # 円が見つかった
-        print("D::detect_red_circle:: detected!! ")
+        #print("D::detect_red_circle:: detected!! ")
         circles = np.uint16(np.around(circles))
         for i in circles[0,:]:
 
@@ -128,7 +151,7 @@ def detect_red_circle(frame):
         
     else:
         # 円が見つからなかった
-        print("D::detect_red_circle::　NO  CIRCLE ")
+        #print("D::detect_red_circle::　NO  CIRCLE ")
         #while True:
         #    # qを押したら終了。
         #    k = cv2.waitKey(1)
@@ -153,8 +176,8 @@ def detect_red_circle(frame):
 
 if __name__ == '__main__':
     # ファイル読み込み
-    cap = cv2.VideoCapture("hira_05.avi")
-    #cap = cv2.VideoCapture(0)
+    #cap = cv2.VideoCapture("hira_05.avi")
+    cap = cv2.VideoCapture(0)
     while True:
         # フレーム読み込み
         ret, img = cap.read() 

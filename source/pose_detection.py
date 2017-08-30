@@ -4,7 +4,7 @@ import os
 import sys
 
 
-def cmp_pose(frame,frame_count):   
+def cmp_pose(frame,frame_count,back):   
 
     #２値化のパラメータ
     t = 50
