@@ -115,7 +115,7 @@ def detect_red_circle(frame):
     circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,3,20,param1=50,param2=80,minRadius=1,maxRadius=50)
     if circles is not None:
         # 円が見つかった
-        print("D::detect_red_circle:: detected!! ")
+        #print("D::detect_red_circle:: detected!! ")
         circles = np.uint16(np.around(circles))
         for i in circles[0,:]:
 
@@ -128,7 +128,7 @@ def detect_red_circle(frame):
         
     else:
         # 円が見つからなかった
-        print("D::detect_red_circle::　NO  CIRCLE ")
+        #print("D::detect_red_circle::　NO  CIRCLE ")
         #while True:
         #    # qを押したら終了。
         #    k = cv2.waitKey(1)
