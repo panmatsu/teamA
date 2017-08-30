@@ -9,6 +9,7 @@ import re
 print("please write your ID or name(English) >")
 rpas = sys.stdin.readline()
 pas = rpas.rstrip("\n")
+idnum = "nodata"
 
 # 検索ワード1文字目が数字ならTrue
 a = re.match(r'\d+', pas)
@@ -38,4 +39,6 @@ for row1 in c:
 
 con.close()
 
+if idnum == "nodata":
+    print("something wrong.")
 
