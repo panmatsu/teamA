@@ -25,8 +25,8 @@ def getList():
     # table:keysetのhitした内容取得
     c = con.cursor()
     c.execute(sql)
-    #for row1 in c:
-    #    idnum = row1[0]
+    for row1 in c:
+        idnum = row1[0]
     #    name = row1[1]
     #    left_ltx = row1[2]
     #    left_lty = row1[3]
