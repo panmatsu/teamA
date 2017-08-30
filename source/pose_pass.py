@@ -6,7 +6,7 @@ import time
 import sys
 from judge_marker import *
 from detect_red_circle import *
-
+from pose_detection import *
 
 if len(sys.argv) == 1:
     cam = cam = cv2.VideoCapture(0)
@@ -27,21 +27,6 @@ hog = cv2.HOGDescriptor()
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 #分類器のパラメータ
 hogParams = {'winStride':(8,8),'padding':(32,32),'scale':1.05}
-
-
-#２値化のパラメータ
-t = 50
-# 平滑下のパラメータ
-n = 5
-#3秒間に何フレームで認証するか
-f = 15
-#ノイズ消しのパラメータ
-kernelo = np.ones((5,5),np.uint8)
-#穴埋めパラメータ
-kernelc = np.ones((5,5),np.uint8)
-#ポーズ判定ピクセル
-j = 7000
-
 
 face_color = (255,0,0)
 body_color = (0,255,0)
@@ -145,33 +130,15 @@ while(1):
 
     #getFrame_flag==Tureなら１０フレーム取得
     if getFrame_flag == True and frame_count < 10:
-        print('フレーム取得')
-        filename = 'frame' + str(frame_count) + '.png'
-        cv2.imwrite(filename,frame)
+        poseWhitePix += cmp_pose(frame,frame_count)
+        frame_count += frame_count
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-        fgmask = cv2.absdiff(gray,back)
-        ret, binal = cv2.threshold(fgmask, t, 255, cv2.THRESH_BINARY)
-        binal = cv2.medianBlur(binal, n)
-        erosion = cv2.erode(binal,kernelo,iterations = 1)
-        opening = cv2.morphologyEx(binal, cv2.MORPH_OPEN, kernelo)
-        closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernelc)
-        result = cv2.absdiff(closing,key_pose)
-        name = 'diff'+str(frame_count)+'.png'
-        cv2.imwrite(name,result)
-        poseWhitePix += cv2.countNonZero(result)
-        
-
-        frame_count = frame_count + 1
-    
-  
     if frame_count == 10:
         #フレームリストのシルエット化
         #鍵との比較=>poseWhitePixリストに追加
-        poseAve = poseWhitePix/frame_count
         #ポーズシルエット開錠の判定
         #リストの平均値取得
-        if poseAve < j:
+        if judge_pose(poseWhitePix,frame_count) == True:
             pose_key = True
             #開錠処理
             print('ポーズ認証')
