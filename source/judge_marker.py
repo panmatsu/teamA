@@ -96,7 +96,8 @@ def judge_marker(img,log):
                     #左上ｙより大きく
                     if lock_position_left[3] > positionList[cnt+1]:
                         #右下ｙより小さいなら
-                        print("OKOKOKOKOKOKOKOKOKOKOKOKleft")
+                        #print("OKOKOKOKOKOKOKOKOKOKOKOKleft")
+                        log.write("left marker is in area\n")
                         leftFlag = True
 
         if lock_position_right[0] < positionList[cnt]:
@@ -108,7 +109,8 @@ def judge_marker(img,log):
                     if lock_position_right[3] > positionList[cnt+1]:
                         #右下ｙより小さいなら
                         
-                        print("OKOKOKOKOKOKOKOKOKOKOKOKRight")
+                        #print("OKOKOKOKOKOKOKOKOKOKOKOKRight")
+                        log.write("right marker is in area\n")
                         rightFlag = True
 
         # 両方フラグがtrueになったなら認識OK
