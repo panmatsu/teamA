@@ -25,7 +25,6 @@ def extract_color(src, h_low, h_high, s_st, v_st):
 
     hsv = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
-
     # 赤はhが350°-10°
     if h_low > h_high:
         # threshold(画像, 閾値, 最大値, 処理タイプ)
@@ -63,8 +62,8 @@ def get_position():
 cv2.namedWindow("Adjust")
 # create trackbar
 # trackbarName, windowName, 初期値, 最大数, onChange
-cv2.createTrackbar('h_low','Adjust',0,360,nothing)
-cv2.createTrackbar('h_high','Adjust',0,360,nothing)
+cv2.createTrackbar('h_low','Adjust',0,180,nothing)
+cv2.createTrackbar('h_high','Adjust',0,180,nothing)
 cv2.createTrackbar('s_st','Adjust',0,100,nothing)
 cv2.createTrackbar('v_st','Adjust',0,100,nothing)
 track = np.zeros((300,512,3),np.uint8)
@@ -104,7 +103,12 @@ def detect_red_circle(frame):
     s_st = cv2.getTrackbarPos("s_st","Adjust")
     v_st = cv2.getTrackbarPos("v_st","Adjust")
 
-    color_1 = extract_color(frame, h_low, h_high, s_st, v_st)
+
+
+    ######  最終決定か  #############
+    # 赤対応　ある程度のボールの影にも強い
+    color_1 = extract_color(frame, 163, 0, 100, 68)
+
 
     # ****  青  ****
     #color_1 = extract_color(frame, 190, 210, 80, 80)
@@ -124,15 +128,31 @@ def detect_red_circle(frame):
                             [1,1,1]],np.uint8)
     # フィルターによる膨張処理                            
     img_dilation = cv2.dilate(median, neiborhood8,iterations=1)
-    cv2.imshow("After",img_dilation)
+    #cv2.imshow("After",img_dilation)
 
     median = img_dilation
 
     kernel = np.ones((5,5),np.uint8)
     # ノイズ除去
     median = cv2.morphologyEx(median, cv2.MORPH_OPEN, kernel)
-    #cv2.imshow("dst",median)
-  
+    cv2.imshow("dst",median)
+
+    ##　重心求める
+    imgEdge, contours, hierarchy = cv2.findContours(median,1,2)
+    #print(str(len(contours)))
+    
+    # 真っ黒画像だった場合False
+    if len(contours) == 0:
+        return False
+    cnt = contours[0]
+    M = cv2.moments(cnt)
+    #print(str(M))
+    cx = int(M['m10']/M['m00'])
+    cy = int(M['m01']/M['m00'])
+    #print("cx:"+str(cx)+"cy:"+str(cy))
+
+
+
     #円検出
     #############  パラメーターを適切な値にする必要あり  ##############
     circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,3,20,param1=50,param2=80,minRadius=1,maxRadius=50)
@@ -160,7 +180,7 @@ def detect_red_circle(frame):
         return False
 
     
-    cv2.imshow("capture", frame)
+    #cv2.imshow("capture", frame)
 
 
     #while True:
