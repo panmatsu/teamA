@@ -41,7 +41,7 @@
 - Windows7  
 - python3.6.2  
 - Webカメラ(iBUFFALO BSQ32KM04)  
-- 専用マーカー(球体/黄)  
+- 専用マーカー(球体/赤)  
 
 ## 3. 機能
 ![概略フローチャート](flow-shiyou.png "flow")  
