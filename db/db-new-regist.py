@@ -47,7 +47,6 @@ while(True):
     key = cv2.waitKey(1)
     if key == ord('q'): # 終了
         print("you press key｢q｣, so finish this plogram.")
-        os.remove("background.png")
         sys.exit()
     elif key == ord('s'): # 保存
         file_name = "background.png"
@@ -83,28 +82,21 @@ ret, poseframe = recap.read()
 
 while(True):
     if poseframe is None:
-        if os.path.isfile("gray_pose.png"):
-            print("FINISH!!")
-            break
-        else:
-            print("sorry, you don't choose your pose.")
-            os.remove("background.png")
-            sys.exit()
+        print("FINISH!!")
+        break
 
     gray = cv2.cvtColor(poseframe, cv2.COLOR_BGR2GRAY)
     cv2.imshow('poseframe',gray)
     pkey = cv2.waitKey(1)
     if pkey == ord('q'):
         print("you press key｢q｣, so finish this plogram.")
-        os.remove("background.png")
-        break
+        sys.exit()
     elif pkey == ord('n'):
         ret, poseframe = recap.read()
     elif pkey == ord('s'):
         file_name = "gray_pose.png"
         cv2.imwrite(file_name,gray)
         break
-
 recap.release()
 cv2.destroyAllWindows()
 
@@ -141,63 +133,45 @@ class mouseParam:
         return (self.mouseEvent["x"], self.mouseEvent["y"])
         
 print("\nplease click the upper-left on the left side marker.")
-print("you can try only two times.\n left-button->mark\n right-button->reset")
-def click_marker():
-    mark = []
-    count = ["lower-right on the left", "upper-left on the right", "lower-right on the right"]
-    num = 0
-    if __name__ == "__main__":
-        read = cv2.imread("gray_pose.png")
-        window_name = "input window"
-        cv2.imshow(window_name, read)
-        mouseData = mouseParam(window_name)
-        while 1:
-            cv2.waitKey(20)
-            #左クリックがあったら表示
-            if mouseData.getEvent() == cv2.EVENT_LBUTTONDOWN:
-                click = mouseData.getPos()
-                if click in mark:
-                    pass
+list = []
+count = ["lower-right on the left", "upper-left on the right", "lower-right on the right"]
+num = 0
+if __name__ == "__main__":
+    read = cv2.imread("gray_pose.png")
+    window_name = "input window"
+    cv2.imshow(window_name, read)
+    mouseData = mouseParam(window_name)
+    while 1:
+        cv2.waitKey(20)
+        #左クリックがあったら表示
+        if mouseData.getEvent() == cv2.EVENT_LBUTTONDOWN:
+            click = mouseData.getPos()
+            if click in list:
+                pass
+            else:
+                list.append(click)
+                if num == len(count):
+                    print("\nok, finished!")
+                    break
                 else:
-                    mark.append(click)
-                    if num == len(count):
-                        print("\nok, finished!")
-                        break
-                    else:
-                        print("\nok, please click the", count[num], "side marker")
-                        num = num + 1
-            #右クリックがあったら終了
-            elif mouseData.getEvent() == cv2.EVENT_RBUTTONDOWN:
-                break
-        cv2.destroyAllWindows()
-        return mark
+                    print("\nok, please click the", count[num], "side marker")
+                    num = num + 1
+                
 
-list_check = 4
-marker = click_marker()
-print(marker)
-print(len(marker))
-if list_check == len(marker):
-    pass
-else:
-    print("not enough the key.\nyou can try one more time!")
-    marker = click_marker()
-    if list_check == len(marker):
-        pass
-    else:
-        print("Failed. it's not properly registered twise.")
-        os.remove(output_filename)
-        os.remove("background.png")
-        os.remove("gray_pose.png")
-        sys.exit()
+        #右クリックがあったら終了
+        elif mouseData.getEvent() == cv2.EVENT_RBUTTONDOWN:
+            break
+            
+    cv2.destroyAllWindows()
 
-left_ltx = marker[0][0]
-left_lty = marker[0][1]
-left_rbx = marker[1][0]
-left_rby = marker[1][1]
-right_ltx = marker[2][0]
-right_lty = marker[2][1]
-right_rbx = marker[3][0]
-right_rby = marker[3][1]
+left_ltx = list[0][0]
+left_lty = list[0][1]
+left_rbx = list[1][0]
+left_rby = list[1][1]
+right_ltx = list[2][0]
+right_lty = list[2][1]
+right_rbx = list[3][0]
+right_rby = list[3][1]
 
 #### ポーズの画像
 backimg = cv2.imread("background.png")
@@ -219,7 +193,6 @@ cv2.imwrite(file_name, result)
 pose = "img/" + file_name
 shutil.move(file_name, pose)
 
-# 動画/画像削除
 os.remove(output_filename)
 os.remove("background.png")
 os.remove("gray_pose.png")
