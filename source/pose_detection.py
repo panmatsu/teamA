@@ -16,7 +16,7 @@ def cmp_pose(frame,frame_count,back,key_pose):
     kernelc = np.ones((5,5),np.uint8)
 
     
-    print('フレーム取得')
+    #print('フレーム取得')
     #filename = "doc\""+'frame' + str(frame_count) + '.png'
     #cv2.imwrite(filename,frame)
      
