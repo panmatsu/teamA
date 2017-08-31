@@ -8,10 +8,26 @@ import shutil
 import os
 
 
-# コマンドラインより登録データ取得(idと名前)
+# コマンドラインより登録データ取得(id)
 print("please write your ID >")
 rnid = sys.stdin.readline()
 nid = rnid.rstrip("\n")
+# idが既存のものでないか確認
+check = sqlite3.connect("dbkey.db", isolation_level=None)
+sql = "select * from keyset where id ==" + str(nid)
+ch = check.cursor()
+ch.execute(sql)
+number = 0
+for row in ch:
+    number = row[0]
+
+if number == 0:
+    pass
+else:
+    print("sorry, your id is already input.")
+    sys.exit()
+
+# コマンドラインより登録データ取得(id)
 print("please write your name in English >")
 rnname = sys.stdin.readline()
 nname = rnname.rstrip("\n")
@@ -30,7 +46,8 @@ while(True):
     cv2.imshow('frame', frame)
     key = cv2.waitKey(1)
     if key == ord('q'): # 終了
-        break
+        print("you press key｢q｣, so finish this plogram.")
+        sys.exit()
     elif key == ord('s'): # 保存
         file_name = "background.png"
         cv2.imwrite(file_name, gray) # 動画保存
@@ -41,8 +58,7 @@ while(True):
         frame_height = frame.shape[0]
         four_cc = cv2.VideoWriter_fourcc(*'XVID')
         fps = 30.0
-        writer = cv2.VideoWriter(output_filename, four_cc, fps, (frame_width, frame_height))
-        # record first frame.
+        writer = cv2.VideoWriter(output_filename, four_cc, fps, (frame_width, frame_height))            # record first frame.
         writer.write(frame)
 
         while True:
@@ -61,10 +77,8 @@ while(True):
         cv2.destroyAllWindows()
 
 # 上記撮影動画より好きな時点の画像をポーズ鍵とする
-#print("please choose your pose_key!\n press｢n｣->next frame\n press｢s｣->save the image\n press｢q｣->finish")
 recap = cv2.VideoCapture(output_filename)
 ret, poseframe = recap.read()
-cnt = 0
 
 while(True):
     if poseframe is None:
@@ -75,13 +89,14 @@ while(True):
     cv2.imshow('poseframe',gray)
     pkey = cv2.waitKey(1)
     if pkey == ord('q'):
-        break
+        print("you press key｢q｣, so finish this plogram.")
+        sys.exit()
     elif pkey == ord('n'):
         ret, poseframe = recap.read()
     elif pkey == ord('s'):
         file_name = "gray_pose.png"
         cv2.imwrite(file_name,gray)
-        cnt += 1
+        break
 recap.release()
 cv2.destroyAllWindows()
 
@@ -141,8 +156,6 @@ if __name__ == "__main__":
                 else:
                     print("\nok, please click the", count[num], "side marker")
                     num = num + 1
-                    print(num)
-                    print(len(count))
                 
 
         #右クリックがあったら終了
@@ -189,7 +202,6 @@ con = sqlite3.connect("dbkey.db", isolation_level=None)
 sqlleft = str(left_ltx) + ", " + str(left_lty) + ", " + str(left_rbx) + ", " + str(left_rby)
 sqlright = str(right_ltx) + ", " + str(right_lty) + ", " + str(right_rbx) + ", " + str(right_rby)
 sql = "insert into keyset values (" + str(nid) + ", \'" + nname + "\', " + sqlleft + ", " + sqlright + ", \'" + pose + "\')"
-print(sql)
 # 実行
 con.execute(sql)
 con.close()
