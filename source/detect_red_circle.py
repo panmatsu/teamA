@@ -128,70 +128,36 @@ def detect_red_circle(frame):
                             [1,1,1]],np.uint8)
     # フィルターによる膨張処理                            
     img_dilation = cv2.dilate(median, neiborhood8,iterations=1)
-    #cv2.imshow("After",img_dilation)
-
-    median = img_dilation
-
+    
+    # ノイズ除去用のフィルタ
     kernel = np.ones((5,5),np.uint8)
     # ノイズ除去
-    median = cv2.morphologyEx(median, cv2.MORPH_OPEN, kernel)
+    median = cv2.morphologyEx(img_dilation, cv2.MORPH_OPEN, kernel)
     cv2.imshow("dst",median)
 
     ##　重心求める
     imgEdge, contours, hierarchy = cv2.findContours(median,1,2)
-    #print(str(len(contours)))
     
     # 真っ黒画像だった場合False
     if len(contours) == 0:
         return False
-    cnt = contours[0]
-    M = cv2.moments(cnt)
-    #print(str(M))
-    cx = int(M['m10']/M['m00'])
-    cy = int(M['m01']/M['m00'])
-    #print("cx:"+str(cx)+"cy:"+str(cy))
 
+    ## 重心描画
+    for i in range(len(contours)):
 
-
-    #円検出
-    #############  パラメーターを適切な値にする必要あり  ##############
-    circles = cv2.HoughCircles(median,cv2.HOUGH_GRADIENT,3,20,param1=50,param2=80,minRadius=1,maxRadius=50)
-    if circles is not None:
-        # 円が見つかった
-        #print("D::detect_red_circle:: detected!! ")
-        circles = np.uint16(np.around(circles))
-        for i in circles[0,:]:
-
-            # positionListに円中心のXYを代入
-            positionList.append(i[0])
-            positionList.append(i[1])
-            
-            # 円の描画
-            cv2.circle(frame,(i[0],i[1]),1,(255,255,0),2)
-        
-    else:
-        # 円が見つからなかった
-        #print("D::detect_red_circle::　NO  CIRCLE ")
-        #while True:
-        #    # qを押したら終了。
-        #    k = cv2.waitKey(1)
-        #    if k == ord('q'):
-
-        return False
-
+        # 画像のモーメント(特徴量)算出
+        M = cv2.moments(contours[i])
+        # 白塊画像の重心をXとY計算
+        cx = int(M['m10']/M['m00'])
+        cy = int(M['m01']/M['m00'])
+        # 円の描画
+        cv2.circle(frame,(cx,cy),1,(255,255,0),2)
     
-    #cv2.imshow("capture", frame)
-
-
-    #while True:
-        # qを押したら終了。
-    #    k = cv2.waitKey(1)
-    #    if k == ord('q'):
-    #        break
-        
-    #cv2.destroyAllWindows()
-
+    # 画像表示
+    cv2.imshow("capture", frame)
+  
     return True
+
 
 
 if __name__ == '__main__':
