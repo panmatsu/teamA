@@ -5,7 +5,7 @@ import os
 import sys
 
 #カメラキャプチャー
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(sys.argv[1])
 
 #特徴量計算
 hog = cv2.HOGDescriptor()
