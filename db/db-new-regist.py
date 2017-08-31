@@ -80,9 +80,11 @@ while(True):
 recap = cv2.VideoCapture(output_filename)
 ret, poseframe = recap.read()
 
+check_pose = "getfile"
 while(True):
     if poseframe is None:
         print("FINISH!!")
+        check_pose = "nofile"
         break
 
     gray = cv2.cvtColor(poseframe, cv2.COLOR_BGR2GRAY)
@@ -99,6 +101,11 @@ while(True):
         break
 recap.release()
 cv2.destroyAllWindows()
+
+if check_pose == "nofile":
+    print("sorry, you don't press key｢s｣.")
+    sys.exit()
+
 
     #### マーカー範囲指定
     #### 読み込むなりなんなりして取得、仮設定中
@@ -133,45 +140,58 @@ class mouseParam:
         return (self.mouseEvent["x"], self.mouseEvent["y"])
         
 print("\nplease click the upper-left on the left side marker.")
-list = []
+mark = []
 count = ["lower-right on the left", "upper-left on the right", "lower-right on the right"]
-num = 0
-if __name__ == "__main__":
-    read = cv2.imread("gray_pose.png")
-    window_name = "input window"
-    cv2.imshow(window_name, read)
-    mouseData = mouseParam(window_name)
-    while 1:
-        cv2.waitKey(20)
-        #左クリックがあったら表示
-        if mouseData.getEvent() == cv2.EVENT_LBUTTONDOWN:
-            click = mouseData.getPos()
-            if click in list:
-                pass
-            else:
-                list.append(click)
-                if num == len(count):
-                    print("\nok, finished!")
-                    break
-                else:
-                    print("\nok, please click the", count[num], "side marker")
-                    num = num + 1
-                
 
+def marker_get():
+    num = 0
+    if __name__ == "__main__":
+        read = cv2.imread("gray_pose.png")
+        window_name = "input window"
+        cv2.imshow(window_name, read)
+        mouseData = mouseParam(window_name)
+        while 1:
+            cv2.waitKey(20)
+            #左クリックがあったら表示
+            if mouseData.getEvent() == cv2.EVENT_LBUTTONDOWN:
+                click = mouseData.getPos()
+                if click in mark:
+                    pass
+                else:
+                    mark.append(click)
+                    if num == len(count):
+                        print("\nok, finished!")
+                        break
+                    else:
+                        print("\nok, please click the", count[num], "side marker")
+                        num = num + 1
+                
         #右クリックがあったら終了
-        elif mouseData.getEvent() == cv2.EVENT_RBUTTONDOWN:
-            break
-            
+            elif mouseData.getEvent() == cv2.EVENT_RBUTTONDOWN:
+                break
+    return mark            
     cv2.destroyAllWindows()
 
-left_ltx = list[0][0]
-left_lty = list[0][1]
-left_rbx = list[1][0]
-left_rby = list[1][1]
-right_ltx = list[2][0]
-right_lty = list[2][1]
-right_rbx = list[3][0]
-right_rby = list[3][1]
+marker = marker_get()
+if len(marker) == 4:
+    pass
+else:
+    print("resset. you have one more chance.")
+    marker = marker_get()
+    if len(marker) == 4:
+        pass
+    else:
+        print("sorry, your click is not true twice.")
+        sys.exit()
+
+left_ltx = marker[0][0]
+left_lty = marker[0][1]
+left_rbx = marker[1][0]
+left_rby = marker[1][1]
+right_ltx = marker[2][0]
+right_lty = marker[2][1]
+right_rbx = marker[3][0]
+right_rby = marker[3][1]
 
 #### ポーズの画像
 backimg = cv2.imread("background.png")
@@ -203,7 +223,9 @@ sqlleft = str(left_ltx) + ", " + str(left_lty) + ", " + str(left_rbx) + ", " + s
 sqlright = str(right_ltx) + ", " + str(right_lty) + ", " + str(right_rbx) + ", " + str(right_rby)
 sql = "insert into keyset values (" + str(nid) + ", \'" + nname + "\', " + sqlleft + ", " + sqlright + ", \'" + pose + "\')"
 # 実行
-con.execute(sql)
+print(sql)
+#con.execute(sql)
 con.close()
+
 
 
