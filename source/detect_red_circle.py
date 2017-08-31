@@ -13,9 +13,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def nothing(x):
-    pass
-
 # メンバ変数
 positionList = [-1]
 
@@ -59,18 +56,6 @@ def get_position():
     return positionList
 
 
-cv2.namedWindow("Adjust")
-# create trackbar
-# trackbarName, windowName, 初期値, 最大数, onChange
-cv2.createTrackbar('h_low','Adjust',0,180,nothing)
-cv2.createTrackbar('h_high','Adjust',0,180,nothing)
-cv2.createTrackbar('s_st','Adjust',0,100,nothing)
-cv2.createTrackbar('v_st','Adjust',0,100,nothing)
-track = np.zeros((300,512,3),np.uint8)
-
-
-
-
 # +++public+++
 #########################################
 #########    　赤円検出      #############
@@ -78,45 +63,15 @@ track = np.zeros((300,512,3),np.uint8)
 ##  赤い円を検出し、中心点を返却 ##
 def detect_red_circle(frame):
 
+    # positionList更新
     global positionList
     del positionList[:]
-    
-    #cv2.imshow("frame", frame)
     
 
     # 取りたい色をHSVでパラメータ設定
     # (画像、最低色相角、最高色相角、彩度閾値、明度閾値)
-    #############  パラメーターを適切な値にする必要あり  ##############
-
-    # ****  赤  ****
-    #color_1 = extract_color(frame, 350, 20, 70, 70)
-    
-    # ****  黄  ****
-    #   割と精度いい
-    # 昔の黄色のパラメーター
-    # color_1 = extract_color(frame, 50, 70, 70, 70)
-    
-    cv2.imshow("Adjust",track)
-
-    h_low = cv2.getTrackbarPos("h_low","Adjust")
-    h_high = cv2.getTrackbarPos("h_high","Adjust")
-    s_st = cv2.getTrackbarPos("s_st","Adjust")
-    v_st = cv2.getTrackbarPos("v_st","Adjust")
-
-
-
-    ######  最終決定か  #############
     # 赤対応　ある程度のボールの影にも強い
     color_1 = extract_color(frame, 163, 0, 100, 68)
-
-
-    # ****  青  ****
-    #color_1 = extract_color(frame, 190, 210, 80, 80)
-
-    # ****  ターコイズ  ****
-    #color_1 = extract_color(frame, 160, 180, 60, 75)
-
-    #cv2.imshow("color_1", color_1)
 
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
@@ -150,6 +105,9 @@ def detect_red_circle(frame):
         # 白塊画像の重心をXとY計算
         cx = int(M['m10']/M['m00'])
         cy = int(M['m01']/M['m00'])
+        # positionListに重心(x,y)を代入
+        positionList.append(cx)
+        positionList.append(cy)
         # 円の描画
         cv2.circle(frame,(cx,cy),1,(255,255,0),2)
     
