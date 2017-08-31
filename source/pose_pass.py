@@ -139,7 +139,8 @@ while(1):
     #    marker_flag = True
     if human_flag == True and time_start==0.0 and marker_flag == False:
         time_start = time.time()
-        print('start time measurement')
+        #print('start time measurement(person)')
+        log.write("start time measurement(marker)\n")
     if time_start != 0 and human_flag == True:
         human_frame_per_3sec = human_frame_per_3sec + 1
     if time_start != 0 and time.time() - time_start > 3.0 and human_frame_per_3sec > f:
@@ -173,7 +174,8 @@ while(1):
         #   getFrame_flag = True
         if marker_key == True and marker_time_start == 0 and marker_key == True:
             marker_time_start = time.time()
-            print('start time measurement(person)')
+            #print('start time measurement(marker)')
+            log.write("start time measurement(marker)\n")
         if marker_time_start != 0 and marker_key == True:
             marker_frame_per_3sec = marker_frame_per_3sec + 1
         if marker_time_start != 0 and time.time() - marker_time_start > 3.0 and marker_frame_per_3sec > f:
