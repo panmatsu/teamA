@@ -61,7 +61,7 @@ def get_position():
 #########    　赤円検出      #############
 #########################################
 ##  赤い円を検出し、中心点を返却 ##
-def detect_red_circle(frame):
+def detect_red_circle(frame,log):
 
     # positionList更新
     global positionList
@@ -76,6 +76,9 @@ def detect_red_circle(frame):
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
 
+    #cv2.imshow("Before", median)
+
+
     # ８近傍フィルター
     neiborhood8 = np.array([[1,1,1],
                             [1,1,1],
@@ -86,6 +89,7 @@ def detect_red_circle(frame):
     # ノイズ除去用のフィルタ
     kernel = np.ones((5,5),np.uint8)
     # ノイズ除去
+
     median = cv2.morphologyEx(img_dilation, cv2.MORPH_OPEN, kernel)
     cv2.imshow("dst",median)
 

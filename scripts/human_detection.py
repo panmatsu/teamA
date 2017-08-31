@@ -2,9 +2,10 @@
 import cv2
 import numpy as np
 import os
+import sys
 
 #カメラキャプチャー
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(sys.argv[1])
 
 #特徴量計算
 hog = cv2.HOGDescriptor()
@@ -28,7 +29,7 @@ try:
             break
         
         #人物（体）認識の実行
-        human,r = hog.detectMultiScale(frame,**hogParams)    
+        human,r = hog.detectMultiScale(frame,:, 0, Size(8,8), Size(32,32), 1.05, 2)    
         for(x,y,w,h) in human:
             cv2.rectangle(frame,(x,y),(x+w,y+h),body_color,3) 
     
