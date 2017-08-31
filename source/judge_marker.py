@@ -57,10 +57,10 @@ def set_lock_position(l_lt_x, l_lt_y, l_rb_x, l_rb_y, r_lt_x, r_lt_y, r_rb_x, r_
 ## すべての座標が、かぎ座標内にあるか判定する
 ##
 #################################
-def judge_marker(img):
+def judge_marker(img,log):
 
     # ****リスト更新****
-    detect_red_circle(img)
+    detect_red_circle(img,log)
     # detect_red_circle.pyから円の中心座標List(x,y)を持ってくる
     positionList = get_position()
 
@@ -76,7 +76,7 @@ def judge_marker(img):
     cv2.rectangle(img, (lock_position_left[0],lock_position_left[1]),(lock_position_left[2],lock_position_left[3]),(255,0,255), 2)
     # 右：水色
     cv2.rectangle(img, (lock_position_right[0],lock_position_right[1]),(lock_position_right[2],lock_position_right[3]),(255,255,0), 2)
-    cv2.imshow("Judge",img)
+    #cv2.imshow("Judge",img)
 
     
     # 左鍵マーカー完了フラグ
@@ -86,7 +86,7 @@ def judge_marker(img):
     # 繰り返しカウント
     cnt = 0
     # 座標リストと鍵マーカーを比較する
-    while cnt < len(positionList)-2:
+    while cnt < len(positionList)-1:
 
         if lock_position_left[0] < positionList[cnt]:
             # 左上ｘより大きく
@@ -96,6 +96,7 @@ def judge_marker(img):
                     #左上ｙより大きく
                     if lock_position_left[3] > positionList[cnt+1]:
                         #右下ｙより小さいなら
+                        print("OKOKOKOKOKOKOKOKOKOKOKOKleft")
                         leftFlag = True
 
         if lock_position_right[0] < positionList[cnt]:
@@ -106,6 +107,8 @@ def judge_marker(img):
                     #左上ｙより大きく
                     if lock_position_right[3] > positionList[cnt+1]:
                         #右下ｙより小さいなら
+                        
+                        print("OKOKOKOKOKOKOKOKOKOKOKOKRight")
                         rightFlag = True
 
         # 両方フラグがtrueになったなら認識OK
@@ -225,7 +228,7 @@ def old_judge_marker(img):
     cv2.circle(img,(LeftList[0],LeftList[1]),1,(255,0,255),2)
     # 右：水色
     cv2.circle(img,(RightList[0],RightList[1]),1,(255,255,0),2)
-    cv2.imshow("capture", img)
+    #cv2.imshow("capture", img)
     
     # 左右マーカーと鍵マーカーを比較する
     leftFlag = False
