@@ -77,7 +77,7 @@ track = np.zeros((300,512,3),np.uint8)
 #########    　赤円検出      #############
 #########################################
 ##  赤い円を検出し、中心点を返却 ##
-def detect_red_circle(frame):
+def detect_red_circle(frame,log):
 
     global positionList
     del positionList[:]
@@ -116,7 +116,7 @@ def detect_red_circle(frame):
 
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
-    cv2.imshow("Before", median)
+    #cv2.imshow("Before", median)
 
     # ８近傍フィルター
     neiborhood8 = np.array([[1,1,1],
@@ -139,6 +139,7 @@ def detect_red_circle(frame):
     if circles is not None:
         # 円が見つかった
         #print("D::detect_red_circle:: detected!! ")
+        log.write("detect color circle\n")
         circles = np.uint16(np.around(circles))
         for i in circles[0,:]:
 
@@ -152,6 +153,7 @@ def detect_red_circle(frame):
     else:
         # 円が見つからなかった
         #print("D::detect_red_circle::　NO  CIRCLE ")
+        log.write("can not detect color circle\n")
         #while True:
         #    # qを押したら終了。
         #    k = cv2.waitKey(1)
@@ -160,7 +162,7 @@ def detect_red_circle(frame):
         return False
 
     
-    cv2.imshow("capture", frame)
+    #cv2.imshow("capture", frame)
 
 
     #while True:
