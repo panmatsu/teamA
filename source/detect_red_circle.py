@@ -75,7 +75,6 @@ def detect_red_circle(frame):
 
     # 画像の平滑化(メディアンフィルター)
     median = cv2.medianBlur(color_1, 5)
-    cv2.imshow("Before", median)
 
     # ８近傍フィルター
     neiborhood8 = np.array([[1,1,1],
@@ -90,7 +89,7 @@ def detect_red_circle(frame):
     median = cv2.morphologyEx(img_dilation, cv2.MORPH_OPEN, kernel)
     cv2.imshow("dst",median)
 
-    ##　重心求める
+    ##　重心
     imgEdge, contours, hierarchy = cv2.findContours(median,1,2)
     
     # 真っ黒画像だった場合False
@@ -100,16 +99,22 @@ def detect_red_circle(frame):
     ## 重心描画
     for i in range(len(contours)):
 
-        # 画像のモーメント(特徴量)算出
-        M = cv2.moments(contours[i])
-        # 白塊画像の重心をXとY計算
-        cx = int(M['m10']/M['m00'])
-        cy = int(M['m01']/M['m00'])
-        # positionListに重心(x,y)を代入
-        positionList.append(cx)
-        positionList.append(cy)
-        # 円の描画
-        cv2.circle(frame,(cx,cy),1,(255,255,0),2)
+        # 面積計算
+        area = cv2.contourArea(contours[i])
+
+        #print("area"+str(area))
+        if area > 200:
+                
+            # 画像のモーメント(特徴量)算出
+            M = cv2.moments(contours[i])
+            # 白塊画像の重心をXとY計算
+            cx = int(M['m10']/M['m00'])
+            cy = int(M['m01']/M['m00'])
+            # positionListに重心(x,y)を代入
+            positionList.append(cx)
+            positionList.append(cy)
+            # 円の描画
+            cv2.circle(frame,(cx,cy),1,(255,255,0),2)
     
     # 画像表示
     cv2.imshow("capture", frame)
