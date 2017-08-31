@@ -112,7 +112,7 @@ while(1):
 
     #人物認識実行
     if marker_flag == False:
-        human,r = hog.detectMultiScale(proFrame,**hogParams)
+        human,r = hog.detectMultiScale(proFrame,hitThreshold=-0.5, winStride=(8,8), padding=(0,0), scale=1.05, finalThreshold=5)
         face = cascade.detectMultiScale(proFrame, scaleFactor=1.2, minNeighbors=2, minSize=(10, 10))
         
         if len(human) != 0:
