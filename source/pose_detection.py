@@ -4,7 +4,7 @@ import os
 import sys
 
 
-def cmp_pose(frame,frame_count,back):   
+def cmp_pose(frame,frame_count,back,key_pose):   
 
     #２値化のパラメータ
     t = 50
@@ -17,8 +17,8 @@ def cmp_pose(frame,frame_count,back):
 
     
     print('フレーム取得')
-    filename = 'frame' + str(frame_count) + '.png'
-    cv2.imwrite(filename,frame)
+    #filename = "doc\""+'frame' + str(frame_count) + '.png'
+    #cv2.imwrite(filename,frame)
      
     #グレイ化
     gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
@@ -34,8 +34,8 @@ def cmp_pose(frame,frame_count,back):
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernelc)
     #平滑下
     result = cv2.absdiff(closing,key_pose)
-    name = 'diff'+str(frame_count)+'.png'
-    cv2.imwrite(name,result)
+    #name = "doc\""+'diff'+str(frame_count)+'.png'
+    #cv2.imwrite(name,result)
 
     return cv2.countNonZero(result)
 
