@@ -10,8 +10,18 @@ from judge_marker import *
 from detect_red_circle import *
 from pose_detection import *
 
-#背景画像
-back = cv2.imread('back.png',0)
+if len(sys.argv) == 1:
+    cam = cam = cv2.VideoCapture(1)
+    ret, back = cam.read()
+    if ret == False:
+        print('cannot read cam')
+        exit(0)
+    else:
+        back = cv2.cvtColor(back, cv2.COLOR_RGB2GRAY)
+if len(sys.argv) == 2:
+    cam = cv2.VideoCapture(sys.argv[1])
+    #背景画像
+    back = cv2.imread('back.png',0)
 
 #ログテキスト
 log = open("log.txt","w")
@@ -56,19 +66,11 @@ while(1):
     else:
         break
 
-print('you are '+name+'?')
+print('Are you '+name+'?')
 log.write("get db's data\n")
 #鍵
 key_pose = cv2.imread(db_pose,0)
 set_lock_position(left_ltx,left_lty,left_rbx,left_rby,right_ltx,right_lty,right_rbx,right_rby)
-
-if len(sys.argv) == 1:
-    cam = cam = cv2.VideoCapture(0)
-if len(sys.argv) == 2:
-    cam = cv2.VideoCapture(sys.argv[1])
-
-f=15
-
 
 #特徴量計算(体)
 hog = cv2.HOGDescriptor()
@@ -77,7 +79,7 @@ hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 hogParams = {'winStride':(8,8),'padding':(32,32),'scale':1.05}
 
 #秒数判定の最低フレーム数
-f = 15
+f = 10
 
 face_color = (255,0,0)
 body_color = (0,255,0)
@@ -112,7 +114,7 @@ while(1):
 
     #人物認識実行
     if marker_flag == False:
-        human,r = hog.detectMultiScale(proFrame,hitThreshold=-0.5, winStride=(8,8), padding=(0,0), scale=1.05, finalThreshold=5)
+        human,r = hog.detectMultiScale(proFrame,hogParams)
         face = cascade.detectMultiScale(proFrame, scaleFactor=1.2, minNeighbors=2, minSize=(10, 10))
         
         if len(human) != 0:
@@ -147,13 +149,13 @@ while(1):
         marker_flag = True
         time_start = 0
         human_frame_per_3sec = 0
-        print('you are human')
+        print('you are person')
         log.write("open person key\n")
     if time_start != 0 and time.time() - time_start > 3.0 and human_frame_per_3sec < f:
         marker_flag = False
         time_start = 0
         human_frame_per_3sec = 0
-        print('you are not human')
+        print('you are not person')
         log.write("close person key\n")
 
 
@@ -193,7 +195,7 @@ while(1):
 
     #getFrame_flag==Tureなら１０フレーム取得
     if getFrame_flag == True and frame_count < 10:
-        poseWhitePix += cmp_pose(frame,frame_count,back,key_pose)
+        poseWhitePix += cmp_pose(frame,frame_count,back,key_pose,log)
         log.write("get silhouette farme\n")
         frame_count += 1
 
@@ -202,7 +204,7 @@ while(1):
         #鍵との比較=>poseWhitePixリストに追加
         #ポーズシルエット開錠の判定
         #リストの平均値取得
-        if judge_pose(poseWhitePix,frame_count) == True:
+        if judge_pose(poseWhitePix,frame_count,log) == True:
             log.write("calc white pix\n")
             pose_key = True
             #開錠処理

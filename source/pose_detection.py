@@ -4,7 +4,7 @@ import os
 import sys
 
 
-def cmp_pose(frame,frame_count,back,key_pose):   
+def cmp_pose(frame,frame_count,back,key_pose,log):   
 
     #２値化のパラメータ
     t = 50
@@ -19,7 +19,7 @@ def cmp_pose(frame,frame_count,back,key_pose):
     #print('フレーム取得')
     #filename = "doc\""+'frame' + str(frame_count) + '.png'
     #cv2.imwrite(filename,frame)
-     
+    log.write("フレーム取得\n")
     #グレイ化
     gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
     #背景との差分
@@ -34,17 +34,18 @@ def cmp_pose(frame,frame_count,back,key_pose):
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernelc)
     #平滑下
     result = cv2.absdiff(closing,key_pose)
-    #name = "doc\""+'diff'+str(frame_count)+'.png'
+    #name = 'diff'+str(frame_count)+'.png'
     #cv2.imwrite(name,result)
 
     return cv2.countNonZero(result)
 
 
-def judge_pose(poseWhitePix,frame_count):
+def judge_pose(poseWhitePix,frame_count,log):
     #ポーズ判定ピクセル
-    j = 4000
+    j = 15000
 
     poseAve = poseWhitePix/frame_count
+    log.write(str(poseAve)+"\n")
     #ポーズシルエット開錠の判定
     #リストの平均値取得
     if poseAve < j:
