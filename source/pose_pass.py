@@ -11,7 +11,7 @@ from detect_red_circle import *
 from pose_detection import *
 
 if len(sys.argv) == 1:
-    cam = cam = cv2.VideoCapture(0)
+    cam = cam = cv2.VideoCapture(1)
     ret, back = cam.read()
     if ret == False:
         print('cannot read cam')
@@ -114,7 +114,7 @@ while(1):
 
     #人物認識実行
     if marker_flag == False:
-        human,r = hog.detectMultiScale(proFrame,hitThreshold=-0.5, winStride=(8,8), padding=(0,0), scale=1.05, finalThreshold=5)
+        human,r = hog.detectMultiScale(proFrame,hogParams)
         face = cascade.detectMultiScale(proFrame, scaleFactor=1.2, minNeighbors=2, minSize=(10, 10))
         
         if len(human) != 0:

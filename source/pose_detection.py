@@ -34,15 +34,15 @@ def cmp_pose(frame,frame_count,back,key_pose,log):
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernelc)
     #平滑下
     result = cv2.absdiff(closing,key_pose)
-    name = "doc\""+'diff'+str(frame_count)+'.png'
-    cv2.imwrite(name,result)
+    #name = 'diff'+str(frame_count)+'.png'
+    #cv2.imwrite(name,result)
 
     return cv2.countNonZero(result)
 
 
 def judge_pose(poseWhitePix,frame_count,log):
     #ポーズ判定ピクセル
-    j = 4000
+    j = 15000
 
     poseAve = poseWhitePix/frame_count
     log.write(str(poseAve)+"\n")

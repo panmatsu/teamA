@@ -107,7 +107,7 @@ def detect_red_circle(frame,log):
         area = cv2.contourArea(contours[i])
 
         #print("area"+str(area))
-        if area > 150:
+        if area > 100:
                 
             # 画像のモーメント(特徴量)算出
             M = cv2.moments(contours[i])
