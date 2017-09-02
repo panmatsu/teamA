@@ -1,0 +1,16 @@
+PoseDiscrimination.py           メイン
+  |
+   -Key.py                      DB
+  |
+   -TimeCount.py                時間測定
+  |   |
+       -PersonAuthentication    人物認証
+  |   |
+       -MarkerJudgement.py      マーカー認証
+  |       |
+           -MarkerDetection.py  マーカー座標取得
+  |
+   -PoseDetection.py            ポーズ認証
+
+
+
